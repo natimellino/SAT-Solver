@@ -1,0 +1,28 @@
+ctl ::= AT v -- atomica
+      | BT -- bottom
+      | Top -- not bottom
+      | NOT ctl
+      | ctl & ctl
+      | ctl || ctl
+      | ctl THEN ctl
+      | AX ctl -- para todo siguiente
+      | EX -- existe siguiente
+      | A ctl U ctl -- for all until
+      | E ctl U ctl -- exists until
+      | AF ctl -- para todo rombo
+      | EF ctl -- existe rombo
+      | AG ctl -- para todo cuadrado
+      | EG ctl -- existe cuadrado 
+      | (ctl)
+
+Quantifiers over paths
+
+    A Φ – All: Φ has to hold on all paths starting from the current state.
+    E Φ – Exists: there exists at least one path starting from the current state where Φ holds.
+
+Path-specific quantifiers
+
+    X φ – Next: φ has to hold at the next state (this operator is sometimes noted N instead of X).
+    G φ – Globally: φ has to hold on the entire subsequent path.
+    F φ – Finally: φ eventually has to hold (somewhere on the subsequent path).
+    φ U ψ – Until: φ has to hold at least until at some position ψ holds. This implies that ψ will be verified in the future.
