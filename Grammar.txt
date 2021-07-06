@@ -26,3 +26,7 @@ Path-specific quantifiers
     G φ – Globally: φ has to hold on the entire subsequent path.
     F φ – Finally: φ eventually has to hold (somewhere on the subsequent path).
     φ U ψ – Until: φ has to hold at least until at some position ψ holds. This implies that ψ will be verified in the future.
+
+to test the parser (for now):
+
+func $ lexer "def a = d_l . {z_l};"
