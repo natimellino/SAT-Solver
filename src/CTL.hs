@@ -19,6 +19,8 @@ data CTL = Atomic String
           | Parens CTL
           deriving Show
 
+data StateList = Nil | St State StateList deriving Show
+
 -- State
 type State = String
 

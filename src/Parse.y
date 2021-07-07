@@ -36,7 +36,10 @@ import Data.Char
 
 %%
 
-
+-- FIXME: make an auxiliar to parse the []
+states :: { StateList } 
+states : state                   { St $1 Nil }
+       | state ',' states        { St $1 $3 }
 
 ctl :: { CTL }
 ctl : AT                        { Atomic  $1 }
@@ -56,10 +59,6 @@ ctl : AT                        { Atomic  $1 }
     | EG ctl                    { EG $2 }
     | '(' ctl ')'               { Parens $2 }
 
-
-states :: { [State] } 
-states : state                   { [$1] }
-       | state ',' states        { $1 : $3 }
 
 {
 data Token = TAt String
