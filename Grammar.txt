@@ -29,4 +29,8 @@ Path-specific quantifiers
 
 to test the parser (for now):
 
-func $ lexer "def a = d_l . {z_l};"
+func $ lexer4states "[s1, s2, s3]"
+
+func $ lexer4relations "[(s1, s2), (s1, s2), (s1, s2)]"
+
+func $ lexer4valuations "[(p, [s, r]), (q, [s, r])]"

@@ -1,7 +1,9 @@
 module CTL where
 
+type Atomic = String
+
 -- We use a 'data' to represent a proposition
-data CTL = Atomic String
+data CTL = Atomic Atomic
           | Bottom
           | Top
           | Not CTL
@@ -19,16 +21,20 @@ data CTL = Atomic String
           | Parens CTL
           deriving Show
 
-data StateList = Nil | St State StateList deriving Show
+data List a = Nil | Cons a (List a) deriving Show 
 
 -- State
 type State = String
+type States = List State
 
 -- A transition between two states
-type Transition = (State, State)
+type Relation = (State, State)
+type Relations = List Relation
 
--- The label of the corresponding state
--- TODO: has to be CTL instead of [String]???
-type Label = (State, [String])
--- don't know :(
-type Model = ([State], CTL) 
+-- The states where an atomic is true
+type Valuation = (Atomic, States)
+type Valuations = List Valuation
+
+-- The model itself
+-- TODO: puede ser un data con campos?
+type Model = (CTL, States, Relations, Valuations)
