@@ -3,6 +3,7 @@ module Parse where
 
 import CTL
 import Data.Char
+import Data.List
 }
 
 %name func 
@@ -35,15 +36,26 @@ import Data.Char
     '{'         { TLeftBrace }
     '}'         { TRightBrace }
     ':'         { TDDot }
+    '='         { TEqual }
     state       { TState $$ }
+    States      { TStates }
+    Relations   { TRelations }
+    Valuations  { TValuations }
+    CTLExp      { TCTLExp }
 
 %%
 
 -- TODO: considerar casos de listas vacias
---  arreglar el lexer de valuations q no anda el gil
+--  arreglar el lexerCTL de valuations q no anda el gil
 -- hacer gramatica general para parsear todo :(
 -- asociatividad y prioridad de las formulas ctl
 -- no se
+
+fields :: { Model }
+fields :   States     '=' sts        
+           Relations  '=' rels       
+           Valuations '=' vals       
+           CTLExp     '=' ctl       {Mdl $12 $3 $6 $9 }        
 
 vals :    '{' valuations '}'       { $2 }
        |  '{' '}'                  { Nil }
@@ -120,41 +132,53 @@ data Token =  TAt String
             | TRightBrace
             | TLeftBrace
             | TDDot
+            | TEqual
+            | TStates
+            | TRelations
+            | TValuations
+            | TCTLExp
 
             deriving Show
 
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
--- TODO: fijarse de hacer otro lexer auxiliar y ver donde llamarlo
+-- Main lexer
+lexer :: String -> [Token]
+lexer [] = []
+lexer cs@(c:cc) | "STATES" `isPrefixOf` cs = []
+                | "RELATIONS" `isPrefixOf` cs = [] 
+                | "VALUATIONS" `isPrefixOf` cs = []  
+                | "CTLEXP" `isPrefixOf` cs = []
+                | isSpace c = lexer cc
 
 -- Propositions
 
 lexerCTL :: String -> [Token]
 lexerCTL [] = []
-lexerCTL (c:cs) | isSpace c = lexer cs
+lexerCTL (c:cs) | isSpace c = lexerCTL cs
                 | isAlpha c = lexVar (c:cs)
-lexerCTL ('&':cs) = TAnd : lexer cs
-lexerCTL ('|':cs) = TOr : lexer cs
-lexerCTL ('(':cs) = TParenLeft : lexer cs
-lexerCTL (')':cs) = TParenRight : lexer cs
-lexerCTL ('[':cs) = TLBracket : lexer cs
-lexerCTL (']':cs) = TRBracket : lexer cs
+lexerCTL ('&':cs) = TAnd : lexerCTL cs
+lexerCTL ('|':cs) = TOr : lexerCTL cs
+lexerCTL ('(':cs) = TParenLeft : lexerCTL cs
+lexerCTL (')':cs) = TParenRight : lexerCTL cs
+lexerCTL ('[':cs) = TLBracket : lexerCTL cs
+lexerCTL (']':cs) = TRBracket : lexerCTL cs
 
 lexVar :: String -> [Token]
-lexVar cs = case span isAlpha cs of
-                ("BT", rest) -> TBT : lexer rest
-                ("TOP", rest) -> TTop : lexer rest
-                ("NOT", rest) -> TNot : lexer rest
-                ("THEN", rest) -> TThen : lexer rest
-                ("AX", rest) -> TAx : lexer rest
-                ("EX", rest) -> TEx : lexer rest
-                ("AF", rest) -> TAf : lexer rest
-                ("EF", rest) -> TEf : lexer rest
-                ("AG", rest) -> TAg : lexer rest
-                ("EG", rest) -> TEg : lexer rest
-                ("EU", rest) -> TEu : lexer rest
-                (var, rest) -> (TAt var) : lexer rest
+lexVar cs = case span isAlpha cs of 
+                ("BT", rest) -> TBT : lexerCTL rest
+                ("TOP", rest) -> TTop : lexerCTL rest
+                ("NOT", rest) -> TNot : lexerCTL rest
+                ("THEN", rest) -> TThen : lexerCTL rest
+                ("AX", rest) -> TAx : lexerCTL rest
+                ("EX", rest) -> TEx : lexerCTL rest
+                ("AF", rest) -> TAf : lexerCTL rest
+                ("EF", rest) -> TEf : lexerCTL rest
+                ("AG", rest) -> TAg : lexerCTL rest
+                ("EG", rest) -> TEg : lexerCTL rest
+                ("EU", rest) -> TEu : lexerCTL rest
+                (var, rest) -> (TAt var) : lexerCTL rest
 
 -- States
 
@@ -169,7 +193,7 @@ lexer4states (c:cs)
 
 lexState :: String -> [Token]
 lexState [] = []
-lexState cs = case span isAlpha cs of
+lexState cs = case span isAlpha cs of  
                 (var, rest) -> (TState var) : lexer4states rest
 
 -- Relations
@@ -189,7 +213,7 @@ lexRelation (')':cs) = TParenRight : lexer4relations cs
 lexRelation (',':cs) = TComma : lexRelation cs
 lexRelation css@(c:cs)
                 | isSpace c = lexRelation cs
-                | isAlpha c = case span isAlpha css of
+                | isAlpha c = case span isAlpha cs of 
                                 (var, rest) -> (TState var) : lexRelation rest
 
 -- Valuations
@@ -206,7 +230,7 @@ lexValuation :: String -> [Token]
 lexValuation [] = []
 lexValuation (':':cs) = TDDot : valuationStates cs
 lexValuation css@(c:cs) | isSpace c = lexValuation cs
-                        | isAlpha c = case span isAlpha css of
+                        | isAlpha c = case span isAlpha cs of
                                         (var, rest) -> (TAt var) : lexValuation rest
 
 valuationStates :: String -> [Token]
@@ -215,7 +239,7 @@ valuationStates ('[':cs) = TLBracket : valuationStates cs
 valuationStates (',':cs) = TComma : valuationStates cs
 valuationStates (']':cs) = TRBracket : lexer4valuations cs
 valuationStates css@(c:cs) | isSpace c = valuationStates cs
-                           | isAlpha c = case span isAlpha css of
+                           | isAlpha c = case span isAlpha cs of 
                                             (var, rest) -> (TState var) : valuationStates rest
 
 }

@@ -37,4 +37,11 @@ type Valuations = List Valuation
 
 -- The model itself
 -- TODO: puede ser un data con campos?
-type Model = (CTL, States, Relations, Valuations)
+-- type Model = (CTL, States, Relations, Valuations
+
+data Model = Mdl {
+    ctlExpr :: CTL,
+    sts     :: States,
+    rels    :: Relations,
+    vals    :: Valuations 
+}
