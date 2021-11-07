@@ -32,6 +32,9 @@ import Data.Char
     '['         { TLBracket }
     ']'         { TRBracket }
     ','         { TComma }
+    '{'         { TLeftBrace }
+    '}'         { TRightBrace }
+    ':'         { TDDot }
     state       { TState $$ }
 
 %%
@@ -42,24 +45,27 @@ import Data.Char
 -- asociatividad y prioridad de las formulas ctl
 -- no se
 
-sts : '[' states ']'    { $2 }
-     | '[' ']'          { Nil } 
+vals :    '{' valuations '}'       { $2 }
+       |  '{' '}'                  { Nil }
+
+valuations :: { List Valuation }
+valuations :   valuation                     { Cons $1 Nil }
+             | valuation ',' valuations      { Cons $1 $3 }
+
+valuation :: { Valuation }
+valuation :  AT ':' sts     { ($1, $3) }
+
+
+sts :  '[' states ']'    { $2 }
+     | '[' ']'           { Nil } 
 
 
 states :: { List State} 
 states : state                   { Cons $1 Nil }
        | state ',' states        { Cons $1 $3 }
 
-vals : '[' valuations ']'    { $2 }
-
-valuations :: { List Valuation }
-valuations :  valuation                     { Cons $1 Nil }
-            | valuation ',' valuations      { Cons $1 $3  }
-
-valuation : '(' AT ',' sts ')'    { ($2, $4) }
-
-
-rels : '[' relations ']'    { $2 }
+rels :    '[' relations ']'    { $2 }
+        | '[' ']'              { Nil }
 
 relations :: { List Relation }
 relations :   relation                  { Cons $1 Nil }
@@ -88,7 +94,7 @@ ctl : AT                        { Atomic  $1 }
 
 
 {
-data Token = TAt String
+data Token =  TAt String
             | TBT 
             | TTop
             | TNot
@@ -111,6 +117,9 @@ data Token = TAt String
             | TRBracket
             | TComma
             | TState String
+            | TRightBrace
+            | TLeftBrace
+            | TDDot
 
             deriving Show
 
@@ -121,17 +130,16 @@ parseError _ = error "Parse error"
 
 -- Propositions
 
-lexer :: String -> [Token]
-lexer [] = []
-lexer (c:cs)
-      | isSpace c = lexer cs
-      | isAlpha c = lexVar (c:cs)
-lexer ('&':cs) = TAnd : lexer cs
-lexer ('|':cs) = TOr : lexer cs
-lexer ('(':cs) = TParenLeft : lexer cs
-lexer (')':cs) = TParenRight : lexer cs
-lexer ('[':cs) = TLBracket : lexer cs
-lexer (']':cs) = TRBracket : lexer cs
+lexerCTL :: String -> [Token]
+lexerCTL [] = []
+lexerCTL (c:cs) | isSpace c = lexer cs
+                | isAlpha c = lexVar (c:cs)
+lexerCTL ('&':cs) = TAnd : lexer cs
+lexerCTL ('|':cs) = TOr : lexer cs
+lexerCTL ('(':cs) = TParenLeft : lexer cs
+lexerCTL (')':cs) = TParenRight : lexer cs
+lexerCTL ('[':cs) = TLBracket : lexer cs
+lexerCTL (']':cs) = TRBracket : lexer cs
 
 lexVar :: String -> [Token]
 lexVar cs = case span isAlpha cs of
@@ -188,36 +196,26 @@ lexRelation css@(c:cs)
 
 lexer4valuations :: String -> [Token]
 lexer4valuations [] = []
-lexer4valuations ('[':cs) = TLBracket : lexer4valuations cs
-lexer4valuations (']':cs) = TRBracket : lexer4valuations cs
+lexer4valuations ('{':cs) = TLeftBrace : lexer4valuations cs
+lexer4valuations ('}':cs) = TRightBrace : lexer4valuations cs
 lexer4valuations (',':cs) = TComma : lexer4valuations cs
-lexer4valuations ('(': cs) = TParenLeft : lexValuation cs
-lexer4valuations (c:cs) | isSpace c = lexer4valuations cs
+lexer4valuations css@(c:cs) | isSpace c = lexer4valuations cs
+                            | isAlpha c = lexValuation css
 
 lexValuation :: String -> [Token]
 lexValuation [] = []
-lexValuation (')':cs) = TParenRight : lexer4valuations cs
-lexValuation (',':cs) = TComma : lexValuation cs
-lexValuation ('[':cs) = valuationStates cs
-lexValuation css@(c:cs)
-                    | isSpace c = lexValuation cs
-                    | isAlpha c = case span isAlpha css of
-                        (var, rest) -> (TAt var) : lexValuation rest 
-
--- FIXME: codigo repetidooooooooooooooooooooooo aaaaaaaaaaaaaaaaaaaaaa
+lexValuation (':':cs) = TDDot : valuationStates cs
+lexValuation css@(c:cs) | isSpace c = lexValuation cs
+                        | isAlpha c = case span isAlpha css of
+                                        (var, rest) -> (TAt var) : lexValuation rest
 
 valuationStates :: String -> [Token]
 valuationStates [] = []
+valuationStates ('[':cs) = TLBracket : valuationStates cs
 valuationStates (',':cs) = TComma : valuationStates cs
-valuationStates (']':cs) = TRBracket : lexValuation cs
-valuationStates (c:cs)
-             | isSpace c = valuationStates cs
-             | isAlpha c = valuationState (c:cs)
+valuationStates (']':cs) = TRBracket : lexer4valuations cs
+valuationStates css@(c:cs) | isSpace c = valuationStates cs
+                           | isAlpha c = case span isAlpha css of
+                                            (var, rest) -> (TState var) : valuationStates rest
 
-valuationState :: String -> [Token]
-valuationState [] = []
-valuationState cs = case span isAlpha cs of
-                        (var, rest) -> (TState var) : valuationStates rest
-
-
-}  
+}
