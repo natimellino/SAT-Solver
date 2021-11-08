@@ -36,6 +36,7 @@ import Data.List
     '{'         { TLeftBrace }
     '}'         { TRightBrace }
     ':'         { TDDot }
+    ';'         { TSemicolon }
     '='         { TEqual }
     state       { TState $$ }
     States      { TStates }
@@ -52,10 +53,10 @@ import Data.List
 -- no se
 
 fields :: { Model }
-fields :   States     '=' sts        
-           Relations  '=' rels       
-           Valuations '=' vals       
-           CTLExp     '=' ctl       {Mdl $12 $3 $6 $9 }        
+fields :   States     '=' sts   ';'       
+           Relations  '=' rels  ';'     
+           Valuations '=' vals  ';'     
+           CTLExp     '=' ctl   ';'   {Mdl $15 $3 $7 $11 }        
 
 vals :    '{' valuations '}'       { $2 }
        |  '{' '}'                  { Nil }
@@ -132,6 +133,7 @@ data Token =  TAt String
             | TRightBrace
             | TLeftBrace
             | TDDot
+            | TSemicolon
             | TEqual
             | TStates
             | TRelations
@@ -146,10 +148,10 @@ parseError _ = error "Parse error"
 -- Main lexer
 lexer :: String -> [Token]
 lexer [] = []
-lexer cs@(c:cc) | "STATES" `isPrefixOf` cs = []
-                | "RELATIONS" `isPrefixOf` cs = [] 
-                | "VALUATIONS" `isPrefixOf` cs = []  
-                | "CTLEXP" `isPrefixOf` cs = []
+lexer cs@(c:cc) | "STATES" `isPrefixOf` cs = TStates : lexer4states (drop 6 cs)
+                | "RELATIONS" `isPrefixOf` cs =  TRelations : lexer4relations (drop 9 cs) 
+                | "VALUATIONS" `isPrefixOf` cs = TValuations : lexer4valuations (drop 10 cs)  
+                | "CTLEXP" `isPrefixOf` cs = TCTLExp : lexerCTL (drop 6 cs)
                 | isSpace c = lexer cc
 
 -- Propositions
@@ -164,6 +166,8 @@ lexerCTL ('(':cs) = TParenLeft : lexerCTL cs
 lexerCTL (')':cs) = TParenRight : lexerCTL cs
 lexerCTL ('[':cs) = TLBracket : lexerCTL cs
 lexerCTL (']':cs) = TRBracket : lexerCTL cs
+lexerCTL ('=':cs) = TEqual : lexerCTL cs
+lexerCTL (';':cs) = TSemicolon : lexer cs
 
 lexVar :: String -> [Token]
 lexVar cs = case span isAlpha cs of 
@@ -187,6 +191,8 @@ lexer4states [] = []
 lexer4states (',':cs) = TComma : lexer4states cs
 lexer4states ('[':cs) = TLBracket : lexer4states cs
 lexer4states (']':cs) = TRBracket : lexer4states cs
+lexer4states (';':cs) = TSemicolon : lexer cs
+lexer4states ('=':cs) = TEqual : lexer4states cs
 lexer4states (c:cs)
              | isSpace c = lexer4states cs
              | isAlpha c = lexState (c:cs)
@@ -204,6 +210,8 @@ lexer4relations ('[':cs) = TLBracket : lexer4relations cs
 lexer4relations (']':cs) = TRBracket : lexer4relations cs
 lexer4relations (',':cs) = TComma : lexer4relations cs
 lexer4relations ('(':cs) = TParenLeft : lexRelation cs
+lexer4relations (';':cs) = TSemicolon : lexer cs
+lexer4relations ('=':cs) = TEqual : lexer4relations cs
 lexer4relations (c:cs) | isSpace c = lexer4relations cs
 
 
@@ -213,7 +221,7 @@ lexRelation (')':cs) = TParenRight : lexer4relations cs
 lexRelation (',':cs) = TComma : lexRelation cs
 lexRelation css@(c:cs)
                 | isSpace c = lexRelation cs
-                | isAlpha c = case span isAlpha cs of 
+                | isAlpha c = case span isAlpha css of 
                                 (var, rest) -> (TState var) : lexRelation rest
 
 -- Valuations
@@ -223,6 +231,8 @@ lexer4valuations [] = []
 lexer4valuations ('{':cs) = TLeftBrace : lexer4valuations cs
 lexer4valuations ('}':cs) = TRightBrace : lexer4valuations cs
 lexer4valuations (',':cs) = TComma : lexer4valuations cs
+lexer4valuations (';':cs) = TSemicolon : lexer cs
+lexer4valuations ('=':cs) = TEqual : lexer4valuations cs
 lexer4valuations css@(c:cs) | isSpace c = lexer4valuations cs
                             | isAlpha c = lexValuation css
 
@@ -230,7 +240,7 @@ lexValuation :: String -> [Token]
 lexValuation [] = []
 lexValuation (':':cs) = TDDot : valuationStates cs
 lexValuation css@(c:cs) | isSpace c = lexValuation cs
-                        | isAlpha c = case span isAlpha cs of
+                        | isAlpha c = case span isAlpha css of
                                         (var, rest) -> (TAt var) : lexValuation rest
 
 valuationStates :: String -> [Token]
@@ -239,7 +249,7 @@ valuationStates ('[':cs) = TLBracket : valuationStates cs
 valuationStates (',':cs) = TComma : valuationStates cs
 valuationStates (']':cs) = TRBracket : lexer4valuations cs
 valuationStates css@(c:cs) | isSpace c = valuationStates cs
-                           | isAlpha c = case span isAlpha cs of 
+                           | isAlpha c = case span isAlpha css of 
                                             (var, rest) -> (TState var) : valuationStates rest
 
 }

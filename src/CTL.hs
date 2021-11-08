@@ -44,4 +44,4 @@ data Model = Mdl {
     sts     :: States,
     rels    :: Relations,
     vals    :: Valuations 
-}
+} deriving Show
