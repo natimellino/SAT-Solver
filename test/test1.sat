@@ -1,3 +1,4 @@
 STATES = [S, R, T, U]; 
 RELATIONS = [(S, R), (R, T), (T, U), (S, T)]; 
-VALUATIONS = {p : [S, R], q: [T]}; CTLEXP = p & q;
+VALUATIONS = {p : [S, R], q: [T]}; 
+CTLEXP = p & q;

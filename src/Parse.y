@@ -46,9 +46,6 @@ import Data.List
 
 %%
 
--- TODO: considerar casos de listas vacias
---  arreglar el lexerCTL de valuations q no anda el gil
--- hacer gramatica general para parsear todo :(
 -- asociatividad y prioridad de las formulas ctl
 -- no se
 
@@ -56,33 +53,33 @@ fields :: { Model }
 fields :   States     '=' sts   ';'       
            Relations  '=' rels  ';'     
            Valuations '=' vals  ';'     
-           CTLExp     '=' ctl   ';'   {Mdl $15 $3 $7 $11 }        
+           CTLExp     '=' ctl   ';'   {Mdl $15 (reverse $3) (reverse $7) (reverse $11) }        
 
 vals :    '{' valuations '}'       { $2 }
-       |  '{' '}'                  { Nil }
+       |  '{' '}'                  { [] }
 
-valuations :: { List Valuation }
-valuations :   valuation                     { Cons $1 Nil }
-             | valuation ',' valuations      { Cons $1 $3 }
+valuations :: { [Valuation] }
+valuations :   valuation                     { [$1] }
+             | valuations ',' valuation      { $3 : $1 }
 
 valuation :: { Valuation }
 valuation :  AT ':' sts     { ($1, $3) }
 
 
 sts :  '[' states ']'    { $2 }
-     | '[' ']'           { Nil } 
+     | '[' ']'           { [] } 
 
 
-states :: { List State} 
-states : state                   { Cons $1 Nil }
-       | state ',' states        { Cons $1 $3 }
+states :: { [State] } 
+states : state                   { [$1] }
+       | states ',' state        { $3 : $1 }
 
 rels :    '[' relations ']'    { $2 }
-        | '[' ']'              { Nil }
+        | '[' ']'              { [] }
 
-relations :: { List Relation }
-relations :   relation                  { Cons $1 Nil }
-            | relation ',' relations    { Cons $1 $3 }
+relations :: { [Relation] }
+relations :   relation                  { [$1] }
+            | relations ',' relation    { $3 : $1 }
 
 relation : '(' state ',' state ')'  { ($2, $4) } 
 

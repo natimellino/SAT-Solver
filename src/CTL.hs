@@ -21,27 +21,19 @@ data CTL = Atomic Atomic
           | Parens CTL
           deriving Show
 
-data List a = Nil | Cons a (List a) deriving Show 
-
 -- State
 type State = String
-type States = List State
 
 -- A transition between two states
 type Relation = (State, State)
-type Relations = List Relation
 
 -- The states where an atomic is true
-type Valuation = (Atomic, States)
-type Valuations = List Valuation
+type Valuation = (Atomic, [State])
 
 -- The model itself
--- TODO: puede ser un data con campos?
--- type Model = (CTL, States, Relations, Valuations
-
 data Model = Mdl {
     ctlExpr :: CTL,
-    sts     :: States,
-    rels    :: Relations,
-    vals    :: Valuations 
+    sts     :: [State],
+    rels    :: [Relation],
+    vals    :: [Valuation] 
 } deriving Show
