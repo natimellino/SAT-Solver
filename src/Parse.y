@@ -43,7 +43,7 @@ import Data.List
     Valuations  { TValuations }
     CTLExp      { TCTLExp }
 
-%left '&' '|' THEN
+%left '&' '|' THEN EU AU
 
 %%
 

@@ -1,4 +1,1 @@
-STATES = [];
-RELATIONS = [];
-VALUATIONS = {};
-CTLEXP = AX p ;
+"STATES = [];RELATIONS = [];VALUATIONS = {};CTLEXP = AX p ;"

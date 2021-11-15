@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4721e880193b6f410bfa8482a73d24bc37f1533df2be352f8b9ce772fd510398
+-- hash: 6a50d2221b0f6338c7fb2e4705dedfc838ff5de6b4d6b637a3676c9995e72aad
 
 name:           TP-Final
 version:        0.1.0.0
@@ -28,7 +28,9 @@ source-repository head
 library
   exposed-modules:
       CTL
+      Eval
       Lib
+      Monads
       Parse
   other-modules:
       Paths_TP_Final

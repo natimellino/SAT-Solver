@@ -37,3 +37,6 @@ data Model = Mdl {
     rels    :: [Relation],
     vals    :: [Valuation] 
 } deriving Show
+
+data Error = Err1 | Err2 deriving (Eq, Show)
+
