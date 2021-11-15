@@ -1,4 +1,4 @@
 STATES = [];
 RELATIONS = [];
 VALUATIONS = {};
-CTLEXP = p | q;
+CTLEXP = AX p ;

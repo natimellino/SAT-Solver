@@ -19,11 +19,10 @@ import Data.List
     '|'         { TOr }
     THEN        {TThen}
     EU          { TEu }
+    AU          { TAu }
     AX          { TAx }
     EX          { TEx }
-    A           { TAll }
     E           { TExists }
-    U           { TUntil }
     AF          { TAf }
     EF          { TEf }
     AG          { TAg }
@@ -44,9 +43,12 @@ import Data.List
     Valuations  { TValuations }
     CTLExp      { TCTLExp }
 
+%left '&' '|' THEN
+
 %%
 
 -- asociatividad y prioridad de las formulas ctl
+-- es realmente necesario los reverse???
 -- no se
 
 fields :: { Model }
@@ -83,7 +85,6 @@ relations :   relation                  { [$1] }
 
 relation : '(' state ',' state ')'  { ($2, $4) } 
 
-
 ctl :: { CTL }
 ctl : AT                        { Atomic  $1 }
     | BT                        { Bottom }
@@ -94,7 +95,7 @@ ctl : AT                        { Atomic  $1 }
     | ctl THEN ctl              { Then $1 $3 }
     | AX ctl                    { AX $2 }
     | EX ctl                    { EX $2 }
-    | A '[' ctl  U ctl ']'      { AU $3 $5 }
+    | AU ctl ctl                { AU $2 $3 }
     | EU ctl ctl                { EU $2 $3 }
     | AF ctl                    { AF $2 }
     | EF ctl                    { EF $2 }
@@ -113,10 +114,11 @@ data Token =  TAt String
             | TThen
             | TAx
             | TEx
-            | TAll
+            -- | TAll
             | TExists
-            | TUntil
+            -- | TUntil
             | TEu
+            | TAu
             | TAf
             | TEf
             | TAg
@@ -179,6 +181,7 @@ lexVar cs = case span isAlpha cs of
                 ("AG", rest) -> TAg : lexerCTL rest
                 ("EG", rest) -> TEg : lexerCTL rest
                 ("EU", rest) -> TEu : lexerCTL rest
+                ("AU", rest) -> TAu : lexerCTL rest
                 (var, rest) -> (TAt var) : lexerCTL rest
 
 -- States
