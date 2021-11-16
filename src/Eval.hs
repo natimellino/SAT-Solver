@@ -32,8 +32,21 @@ sat (EX ctl) = do res <- sat ctl
                   preExists res
 sat (AX ctl) = do res <- sat ctl
                   preForAll res                                     
--- TODO: faltan los casos pikntes :(
-sat _ = return []
+sat (EU ctl ctl') = do res <- sat ctl
+                       res' <- sat ctl'
+                       existsUntil res res'
+sat (AU ctl ctl') = do res <- sat ctl
+                       res' <- sat ctl'
+                       forAllUntil res res'
+sat (AF ctl) = do res <- sat ctl
+                  inev res
+sat (EF ctl) = do res <- sat ctl
+                  sts <- getStates
+                  existsUntil sts res
+-- check this casessss                  
+sat (AG ctl) = sat (Not (EF (Not ctl)))
+sat (EG ctl) = sat (Not (AF (Not ctl)))                      
+sat _ = return [] -- handlear error ak -_-
 
 -- Returns the states where an atomic is valid
 getMatchedStates :: Atomic -> [Valuation] -> [State]

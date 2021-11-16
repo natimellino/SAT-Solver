@@ -18,7 +18,6 @@ data CTL = Atomic Atomic
           | EF CTL -- Existe Rombo
           | AG CTL -- Para todo cuadrado
           | EG CTL -- Existe cuadrado
-          | Parens CTL
           deriving Show
 
 -- State
