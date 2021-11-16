@@ -1,10 +1,11 @@
 module Monads where
 
 import CTL
-import Control.Monad ( liftM, ap )              
+import Control.Monad ( liftM, ap )
+import Data.Set              
 
 class Monad m => MonadState m where
-    getStates :: m [State]
+    getStates :: m (Set State)
     getCTL    :: m CTL
     getRels   :: m [Relation]
     getVals   :: m [Valuation]
@@ -14,7 +15,7 @@ class Monad m => MonadError m where
 
 -- Mónada de estado
 
-newtype St a = State { runState :: Model -> (a, Model) }
+newtype St a = State { runState :: SModel -> (a, SModel) }
 
 -- Para calmar al GHC
 instance Functor St where
@@ -29,8 +30,8 @@ instance Monad St where
     m >>= f = State (\s -> let (v, s') = runState m s in runState (f v) s')
 
 instance MonadState St where
-    getStates = State (\s -> (sts s, s))
-    getCTL    = State (\s -> (ctlExpr s, s)) 
-    getRels   = State (\s -> (rels s, s)) 
-    getVals   = State (\s -> (vals s, s)) 
+    getStates = State (\s -> (ssts s, s))
+    getCTL    = State (\s -> (sctlExpr s, s)) 
+    getRels   = State (\s -> (srels s, s)) 
+    getVals   = State (\s -> (svals s, s)) 
 

@@ -35,8 +35,23 @@ func $ lexer4relations "[(s1, s2), (s1, s2), (s1, s2)]"
 
 func $ lexer4valuations "[(p, [s, r]), (q, [s, r])]"
 
-stack exec TP-Final-exe "test1.sat"
+stack exec TP-Final-exe ".test/test1.sat"
 
 Precedencias:
 
 &, | y THEN asocian a izquierda
+(completar xd)
+
+Tests:
+
+r THEN AX v  --> [B, C, D, E]
+a THEN AX AX a ---> [A, B, C, D, E]
+EG NOT v ----> [B, E]
+AF v ---> [A, C, D]
+AF a ---> [A, B, C, D, E]
+AG a ---> []
+
+
+Casos fallidos:
+
+EG NOT v

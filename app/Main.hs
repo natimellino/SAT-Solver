@@ -6,12 +6,14 @@ import Lib
 import Parse
 import CTL
 import Eval
+import Data.Set
 
 main :: IO ()
 main = do args <- getArgs
           contents <- readFile $ head args
           let model = func $ lexer contents
-          let sts = eval model
-          print model
+          let smodel = SMdl (ctlExpr model) (fromList (sts model)) (rels model) (vals model)
+          let sts = eval smodel
+          print smodel
           print sts
           

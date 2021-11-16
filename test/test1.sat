@@ -1,4 +1,4 @@
 STATES = [S, R, T, U]; 
 RELATIONS = [(S, R), (R, T), (T, U), (S, T)]; 
 VALUATIONS = {p : [S, R, T], q: [T]}; 
-CTLEXP = AX p;
+CTLEXP = p | q;
