@@ -103,7 +103,7 @@ ctl : AT                        { Atomic  $1 }
     | EF ctl                    { EF $2 }
     | AG ctl                    { AG $2 }
     | EG ctl                    { EG $2 }
-    | '(' ctl ')'               {  $2 }
+    | '(' ctl ')'               { $2 }
 
 
 {

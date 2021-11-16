@@ -4,10 +4,10 @@ import CTL
 import Control.Monad ( liftM, ap )              
 
 class Monad m => MonadState m where
-    -- Cambia el valor de la proposición lógica
-    updateProp :: CTL -> m () 
-    -- Obtiene la proposición lógica
-    getProp :: m CTL
+    getStates :: m [State]
+    getCTL    :: m CTL
+    getRels   :: m [Relation]
+    getVals   :: m [Valuation]
 
 class Monad m => MonadError m where
     throw :: Error -> m a
@@ -29,6 +29,8 @@ instance Monad St where
     m >>= f = State (\s -> let (v, s') = runState m s in runState (f v) s')
 
 instance MonadState St where
-    updateProp ctl = return ()
-    getProp = return (Not (Atomic "p")) 
+    getStates = State (\s -> (sts s, s))
+    getCTL    = State (\s -> (ctlExpr s, s)) 
+    getRels   = State (\s -> (rels s, s)) 
+    getVals   = State (\s -> (vals s, s)) 
 
