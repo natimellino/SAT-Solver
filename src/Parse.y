@@ -43,7 +43,9 @@ import Data.List
     Valuations  { TValuations }
     CTLExp      { TCTLExp }
 
-%left '&' '|' THEN EU AU
+%left '&' '|' 
+%left THEN EU AU
+%nonassoc NOT AF EF AG EG AX AE
 
 %%
 
@@ -101,7 +103,7 @@ ctl : AT                        { Atomic  $1 }
     | EF ctl                    { EF $2 }
     | AG ctl                    { AG $2 }
     | EG ctl                    { EG $2 }
-    | '(' ctl ')'               { Parens $2 }
+    | '(' ctl ')'               {  $2 }
 
 
 {

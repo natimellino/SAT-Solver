@@ -8,8 +8,8 @@ import CTL
 
 
 -- TODO: revisar esto tiene q tomar un ctl ???? hay algo raro
-eval :: CTL -> [State]
-eval mdl = fst $ runState (eval' mdl) mdl
+-- eval :: CTL -> [State]
+-- eval mdl = fst $ runState (eval' mdl) mdl
 
-eval' :: MonadState m => Model -> m [State]
-eval' mdl = return []
+-- eval' :: MonadState m => Model -> m [State]
+-- eval' mdl = return []
