@@ -75,6 +75,14 @@ inev xs = do xs' <- preForAll xs
              if xs /= ys then inev ys 
              else return xs
 
-existsUntil = undefined
+existsUntil ::  MonadState m => Set State -> Set State -> m (Set State)
+existsUntil res1 res2 = do preE <- preExists res2
+                           let res = res2 `union` (res1 `intersection` preE)
+                           if res2 /= res then existsUntil res1 res
+                           else return res2
 
-forAllUntil = undefined
+forAllUntil ::  MonadState m => Set State -> Set State -> m (Set State)
+forAllUntil res1 res2 = do preE <- preForAll res2
+                           let res = res2 `union` (res1 `intersection` preE)
+                           if res2 /= res then forAllUntil res1 res
+                           else return res2

@@ -50,8 +50,10 @@ EG NOT v ----> [B, E]
 AF v ---> [A, C, D]
 AF a ---> [A, B, C, D, E]
 AG a ---> []
-
-
-Casos fallidos:
-
-EG NOT v
+AG AF a  ---> [A, B, C, D, E]
+AU n NOT n  ---> [A, B, C, D, E]
+AU NOT n n  ----> [E]
+EU n r  ----> [A, D]
+r THEN AF v ---> [A, B, C, D, E]
+---------------all test passed until here---------------
+(complete with more tests)
