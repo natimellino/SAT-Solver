@@ -45,7 +45,6 @@ sat (EF ctl) = do res <- sat ctl
 -- check this casessss                  
 sat (AG ctl) = sat (Not (EF (Not ctl)))
 sat (EG ctl) = sat (Not (AF (Not ctl)))                      
--- sat _ = return empty -- handlear error ak -_-
 
 -- Returns the states where an atomic is valid
 getMatchedStates :: Atomic -> [Valuation] -> Set State
@@ -54,37 +53,27 @@ getMatchedStates at ((at', states):xs) = if at == at' then fromList states
                                          else getMatchedStates at xs
 
 
--- TODO: testear estas funcionessss
 preExists :: MonadState m => Set State -> m (Set State)
--- preExists empty = return empty
 preExists xs = do sts <- getStates
                   rels <- getRels
                   let pre = go (toList sts) (toList xs) rels 
                   return $ fromList pre
               where go [] _  _= []
-                    go (s:sts) xs rels = let l = Prelude.filter (\s'-> (s, s') `elem` rels ) xs
-                                             l' = go sts xs rels
-                                         in if length l > 0 then s:l'
-                                            else l'  -- Eliminar elementos repetidos
+                    go (s:sts) xs rels = let l' = go sts xs rels
+                                         in if any (\s'-> (s, s') `elem` rels ) xs then s:l'
+                                            else l'  
 
+-- Usamos la igualdad: preForAll(Y) = S - preExists(S - Y)
 preForAll :: MonadState m => Set State -> m (Set State)
--- preForAll empty = return empty
 preForAll xs = do sts <- getStates
-                  rels <- getRels
-                  let pre = go (toList sts) (toList xs) rels
-                  return $ fromList pre
-               where go [] _  _= []
-                     go (s:sts) xs rels = let l = Prelude.filter (\s'-> (s, s') `elem` rels ) xs
-                                              l' = go sts xs rels
-                                          in if l == xs then s:l'
-                                             else l'  -- Eliminar elementos repetidos
+                  pre <- preExists (sts \\ xs)
+                  return $ sts \\ pre
 
--- TODO: debuggear
 inev :: MonadState m => Set State -> m (Set State)
-inev xs = do xs' <- preForAll xs
+inev xs = do xs' <- preForAll xs  
              let ys = xs `union` xs'
-             if xs == ys then return xs 
-             else inev ys
+             if xs /= ys then inev ys 
+             else return xs
 
 existsUntil = undefined
 
