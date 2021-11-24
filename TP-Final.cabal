@@ -3,8 +3,6 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 6a50d2221b0f6338c7fb2e4705dedfc838ff5de6b4d6b637a3676c9995e72aad
 
 name:           TP-Final
 version:        0.1.0.0
@@ -32,6 +30,7 @@ library
       Lib
       Monads
       Parse
+      PPrint
   other-modules:
       Paths_TP_Final
   hs-source-dirs:
@@ -40,6 +39,10 @@ library
       array
     , base >=4.7 && <5
     , containers
+    , pretty
+    , prettyprinter
+    , prettyprinter-ansi-terminal
+    , text
   default-language: Haskell2010
 
 executable TP-Final-exe
@@ -54,6 +57,10 @@ executable TP-Final-exe
     , array
     , base >=4.7 && <5
     , containers
+    , pretty
+    , prettyprinter
+    , prettyprinter-ansi-terminal
+    , text
   default-language: Haskell2010
 
 test-suite TP-Final-test
@@ -69,4 +76,8 @@ test-suite TP-Final-test
     , array
     , base >=4.7 && <5
     , containers
+    , pretty
+    , prettyprinter
+    , prettyprinter-ansi-terminal
+    , text
   default-language: Haskell2010

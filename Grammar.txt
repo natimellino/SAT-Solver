@@ -27,23 +27,13 @@ Path-specific quantifiers
     F φ – Finally: φ eventually has to hold (somewhere on the subsequent path).
     φ U ψ – Until: φ has to hold at least until at some position ψ holds. This implies that ψ will be verified in the future.
 
-to test the parser (for now):
+Para ejecutar:
 
-func $ lexer4states "[s1, s2, s3]"
-
-func $ lexer4relations "[(s1, s2), (s1, s2), (s1, s2)]"
-
-func $ lexer4valuations "[(p, [s, r]), (q, [s, r])]"
-
-stack exec TP-Final-exe ".test/test1.sat"
-
-Precedencias:
-
-&, | y THEN asocian a izquierda
-(completar xd)
+stack exec TP-Final-exe ".test/test3.sat"
 
 Tests:
 
+------------model is in file: test3.sat----------------
 r THEN AX v  --> [B, C, D, E]
 a THEN AX AX a ---> [A, B, C, D, E]
 EG NOT v ----> [B, E]
@@ -55,5 +45,12 @@ AU n NOT n  ---> [A, B, C, D, E]
 AU NOT n n  ----> [E]
 EU n r  ----> [A, D]
 r THEN AF v ---> [A, B, C, D, E]
----------------all test passed until here---------------
+---------------all tests passed until here---------------
+
 (complete with more tests)
+
+https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/pattern_synonyms.html
+
+{-# LANGUAGE PatternSynonyms #-}
+
+https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/unicode_syntax.html
