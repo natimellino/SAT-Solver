@@ -45,7 +45,7 @@ import Data.List
 
 %left '&' '|' 
 %left '->' EU AU
-%nonassoc '!' AF EF AG EG AX AE
+%nonassoc '!' AF EF AG EG AX EX AE 
 
 %%
 
