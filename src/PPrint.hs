@@ -1,3 +1,4 @@
+{-# LANGUAGE UnicodeSyntax #-}
 module PPrint where
 
 import CTL
@@ -6,7 +7,6 @@ import Prettyprinter.Render.Terminal
   ( renderStrict, italicized, bold, color, colorDull, Color (..), AnsiStyle )
 import Data.Text.Prettyprint.Doc
 
- {-# LANGUAGE UnicodeSyntax #-}
 
 -- Colors
 
@@ -60,9 +60,15 @@ ppFormula :: CTL -> String
 ppFormula x = render $ ctl2doc (ppCTL x)
 
 ppCTL :: CTL -> String
-ppCTL (Atomic v) = v
+-- First, we take care of the synonims patterns so they print correctly
+ppCTL (AU Top p) = uall ++ urombo ++ (ppCTL p) -- AF pattern
+ppCTL (EU Top p) = uexists ++ urombo ++ (ppCTL p) -- EF pattern
+ppCTL (Not (EF (Not p))) = uall ++ usquare ++ (ppCTL p) -- AG pattern
+ppCTL (Not (AF (Not p))) = uexists ++ usquare ++ (ppCTL p) -- EG pattern
+-- Now the rest is the usual pattern matching
 ppCTL Bottom = ubottom
 ppCTL Top = utop
+ppCTL (Atomic v) = v
 ppCTL (Not p) = unot ++ (ppCTL p)
 ppCTL (And p q) = (ppCTL p) ++ uand ++ (ppCTL q)
 ppCTL (Or p q) = (ppCTL p) ++ uor ++ (ppCTL q)
@@ -71,11 +77,6 @@ ppCTL (AX p) =  uall ++ ucircle ++ (ppCTL p)
 ppCTL (EX p) =  uexists ++ ucircle ++ (ppCTL p)
 ppCTL (AU p q) =  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
 ppCTL (EU p q) =  uexists ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
-ppCTL (AF p) = uall ++ urombo ++ (ppCTL p)
-ppCTL (EF p) = uexists ++ urombo ++ (ppCTL p)
-ppCTL (AG p) = uall ++ usquare ++ (ppCTL p)
-ppCTL (EG p) = uexists ++ usquare ++ (ppCTL p)
-
 
 ppModel :: SModel -> String
 ppModel = undefined

@@ -1,5 +1,6 @@
-module CTL where
+{-# LANGUAGE PatternSynonyms #-}
 
+module CTL where
 import Data.Set
 
 type Atomic = String
@@ -16,11 +17,23 @@ data CTL = Atomic Atomic
           | EX CTL -- Existe siguiente
           | AU CTL CTL -- For All Until
           | EU CTL CTL -- Exists Until
-          | AF CTL -- Para todo rombo
-          | EF CTL -- Existe Rombo
-          | AG CTL -- Para todo cuadrado
-          | EG CTL -- Existe cuadrado
           deriving Show
+
+-- Para todo rombo
+pattern AF :: CTL -> CTL
+pattern AF ctl = AU Top ctl
+
+-- Existe rombo
+pattern EF :: CTL -> CTL
+pattern EF ctl = EU Top ctl
+
+-- Para todo cuadrado
+pattern AG :: CTL -> CTL
+pattern AG ctl = Not (EF (Not ctl))
+
+-- Existe cuadrado
+pattern EG :: CTL -> CTL
+pattern EG ctl = Not (AF (Not ctl))
 
 -- State
 type State = String

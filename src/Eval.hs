@@ -36,15 +36,7 @@ sat (EU ctl ctl') = do res <- sat ctl
                        existsUntil res res'
 sat (AU ctl ctl') = do res <- sat ctl
                        res' <- sat ctl'
-                       forAllUntil res res'
-sat (AF ctl) = do res <- sat ctl
-                  inev res
-sat (EF ctl) = do res <- sat ctl
-                  sts <- getStates
-                  existsUntil sts res
--- check this casessss                  
-sat (AG ctl) = sat (Not (EF (Not ctl)))
-sat (EG ctl) = sat (Not (AF (Not ctl)))                      
+                       forAllUntil res res'                    
 
 -- Returns the states where an atomic is valid
 getMatchedStates :: Atomic -> [Valuation] -> Set State
