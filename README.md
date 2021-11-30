@@ -51,7 +51,7 @@ that are on the same item have the same precedence.
 
 - Left associative: &, \|
 
-- Left associative: ->, EU AU
+- Left associative: ->, EU, AU
 
 - !, AX, EX, EF, AF, AG, EG
 
