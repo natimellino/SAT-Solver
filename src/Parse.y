@@ -17,7 +17,7 @@ import Data.List
     '!'         { TNot }
     '&'         { TAnd }
     '|'         { TOr }
-    THEN        {TThen}
+    '->'        {TThen}
     EU          { TEu }
     AU          { TAu }
     AX          { TAx }
@@ -44,7 +44,7 @@ import Data.List
     CTLExp      { TCTLExp }
 
 %left '&' '|' 
-%left THEN EU AU
+%left '->' EU AU
 %nonassoc '!' AF EF AG EG AX AE
 
 %%
@@ -94,7 +94,7 @@ ctl : AT                        { Atomic  $1 }
     | '!' ctl                   { Not $2}
     | ctl '&' ctl               { And $1 $3 }
     | ctl '|' ctl               { Or $1 $3 }
-    | ctl THEN ctl              { Then $1 $3 }
+    | ctl '->' ctl              { Then $1 $3 }
     | AX ctl                    { AX $2 }
     | EX ctl                    { EX $2 }
     | AU ctl ctl                { AU $2 $3 }
@@ -159,6 +159,7 @@ lexer cs@(c:cc) | "STATES" `isPrefixOf` cs = TStates : lexer4states (drop 6 cs)
 
 lexerCTL :: String -> [Token]
 lexerCTL [] = []
+lexerCTL ('-':'>':cs) = TThen : lexerCTL cs
 lexerCTL ('!':cs) = TNot : lexerCTL cs
 lexerCTL (c:cs) | isSpace c = lexerCTL cs
                 | isAlpha c = lexVar (c:cs)
@@ -172,10 +173,11 @@ lexerCTL ('=':cs) = TEqual : lexerCTL cs
 lexerCTL (';':cs) = TSemicolon : lexer cs
 
 lexVar :: String -> [Token]
+lexVar ('-':'>':cs) = TThen : lexerCTL cs
 lexVar cs = case span isAlpha cs of 
                 ("BT", rest) -> TBT : lexerCTL rest
                 ("TOP", rest) -> TTop : lexerCTL rest
-                ("THEN", rest) -> TThen : lexerCTL rest
+                ("->", rest) -> TThen : lexerCTL rest
                 ("AX", rest) -> TAx : lexerCTL rest
                 ("EX", rest) -> TEx : lexerCTL rest
                 ("AF", rest) -> TAf : lexerCTL rest

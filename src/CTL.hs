@@ -5,7 +5,7 @@ import Data.Set
 
 type Atomic = String
 
--- We use a 'data' to represent a proposition
+-- We use a 'data' to represent a logic proposition
 data CTL = Atomic Atomic
           | Bottom
           | Top
@@ -18,6 +18,8 @@ data CTL = Atomic Atomic
           | AU CTL CTL -- For All Until
           | EU CTL CTL -- Exists Until
           deriving Show
+
+-- We use pattern synonyms for derivated operators
 
 -- Para todo rombo
 pattern AF :: CTL -> CTL

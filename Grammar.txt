@@ -1,10 +1,10 @@
 ctl ::= AT v -- atomica
       | BT -- bottom
       | Top -- not bottom
-      | NOT ctl
+      | ! ctl
       | ctl & ctl
       | ctl || ctl
-      | ctl THEN ctl
+      | ctl -> ctl
       | AX ctl -- para todo siguiente
       | EX -- existe siguiente
       | A ctl U ctl -- for all until
@@ -34,17 +34,17 @@ stack exec TP-Final-exe ".test/test3.sat"
 Tests:
 
 ------------model is in file: test3.sat----------------
-r THEN AX v  --> [B, C, D, E]
-a THEN AX AX a ---> [A, B, C, D, E]
-EG NOT v ----> [B, E]
+r -> AX v  --> [B, C, D, E]
+a -> AX AX a ---> [A, B, C, D, E]
+EG !v ----> [B, E]
 AF v ---> [A, C, D]
 AF a ---> [A, B, C, D, E]
 AG a ---> []
 AG AF a  ---> [A, B, C, D, E]
-AU n NOT n  ---> [A, B, C, D, E]
-AU NOT n n  ----> [E]
+AU n !n  ---> [A, B, C, D, E]
+AU !n n  ----> [E]
 EU n r  ----> [A, D]
-r THEN AF v ---> [A, B, C, D, E]
+r -> AF v ---> [A, B, C, D, E]
 ---------------all tests passed until here---------------
 
 (complete with more tests)
