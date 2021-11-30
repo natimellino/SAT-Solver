@@ -38,11 +38,17 @@ prompt2doc n = promptColor (pretty n)
 result2doc :: String -> Doc AnsiStyle
 result2doc n = resultColor (pretty n)
 
+error2doc :: String -> Doc AnsiStyle
+error2doc n = errorColor (pretty n)
+
 ctl2doc :: String -> Doc AnsiStyle
 ctl2doc n = ctlColor (pretty n)
 
 render :: Doc AnsiStyle -> String
 render = unpack . renderStrict . layoutSmart defaultLayoutOptions
+
+ppError :: String -> String
+ppError x = render $ error2doc x
 
 ppPrompt :: String -> String
 ppPrompt x  = render $ prompt2doc x

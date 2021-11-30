@@ -1,4 +1,4 @@
 STATES = [A, B, C, D, E]; 
 RELATIONS = [(A, D), (D, C), (C, B), (B, A), (B, E), (E, B)]; 
 VALUATIONS = {r : [A, D], a: [B, D], v : [C], n : [E]}; 
-CTLEXP = t;
+CTLEXP = AU n !n;
