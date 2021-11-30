@@ -26,22 +26,22 @@ examples you can use.
 
 The syntax used to write the CTL formula in the .sat file is pretty simple:
 
-| Symbol            | Translation        |
-| ----------------- | ------------------ |
-| TOP               | ⊤                  |
-| BT                | ⊥                  |
-| ! $\phi$          | ¬ $\phi$           |
-| $\phi$ & $\psi$   | $\phi$ ∧ $\psi$    |
-| $\phi$ \| $\psi$  | $\phi$ ∨ $\psi$    |
-| $\phi$ -> $\psi$  | $\phi$ → $\psi$    |
-| AX $\phi$         | ∀◯                 | 
-| EX $\phi$         | ∃◯                 |
-| AU $\phi$         | ∀ [$\phi$ U $\psi$]|
-| EU $\phi$         | ∃ [$\phi$ U $\psi$]|
-| AF $\phi$         | ∀◊                 |
-| EF $\phi$         | ∃◊                 |
-| AG $\phi$         | ∀□                 |
-| EG $\phi$         | ∃□                 |
+| Symbol       | Translation        |
+| ------------ | ------------------ |
+| TOP          | ⊤                  |
+| BT           | ⊥                  |
+| ! p          | ¬ p                |
+| p & q        | p ∧ q              |
+| p \| q       | p ∨ q              |
+| p -> q       | p → q              |
+| AX p         | ∀◯                 | 
+| EX p         | ∃◯                 |
+| AU p         | ∀ [p U q]          |
+| EU p         | ∃ [p U q]          |
+| AF p         | ∀◊                 |
+| EF p         | ∃◊                 |
+| AG p         | ∀□                 |
+| EG p         | ∃□                 |
 
 ### Precedence
 
