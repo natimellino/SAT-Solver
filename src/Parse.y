@@ -177,7 +177,6 @@ lexVar ('-':'>':cs) = TThen : lexerCTL cs
 lexVar cs = case span isAlpha cs of 
                 ("BT", rest) -> TBT : lexerCTL rest
                 ("TOP", rest) -> TTop : lexerCTL rest
-                ("->", rest) -> TThen : lexerCTL rest
                 ("AX", rest) -> TAx : lexerCTL rest
                 ("EX", rest) -> TEx : lexerCTL rest
                 ("AF", rest) -> TAf : lexerCTL rest
