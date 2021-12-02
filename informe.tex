@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.54cm]{geometry}
+\usepackage[utf8]{inputenc}
+% \usepackage[spanish, mexico]{babel}
+\usepackage[article]{ragged2e}
+\usepackage{textcomp}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+
+\renewcommand{\contentsname}{Contenidos}
+
+\begin{document}
+% \maketitle
+
+\begin{titlepage}
+    \centering
+    {\bfseries\LARGE Universidad Nacional de Rosario \par}
+    \vspace{1cm}
+    {\scshape\Large Facultad de Ciencias Exactas, Ingeniería y Agrimensura \par}
+    \vspace{3cm}
+    {\scshape\Huge SAT-Solver \par}
+    \vspace{3cm}
+    {\itshape\Large Un evaluador para modelos de lógica temporal \par}
+    \vfill
+    {\Large Autor: \par}
+    {\Large Natalia Mellino \par}
+    \vfill
+    {\Large Diciembre 2021 \par}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Motivación}
+
+\subsection{¿Por qué un DSL para Lógica Temporal?}
+
+La principal motivación de la realización de este proyecto, no es más ni menos
+que poder proveer una herramienta que pueda ser útil al momento de aprender y
+poner en práctica los conocimientos adquiridos de la teoría de Lógica Temporal. \\
+
+Al momento de realizar ejercicios o querer hacer alguna verificación sobre estos
+modelos lógicos, nos encontramos con que no siempre podemos realizar estas tareas 
+de manera rápida y simple como deseamos. Es por ello, que mi intención es poder 
+facilitar en la medida que sea posible a cualquier persona que se encuentre en 
+alguna de las situaciones mencionadas anteriormente.  
+
+\section{Introducción}
+
+\subsection{Un repaso de CTL}
+El objetivo de esta sección no es dar una explicación exhaustiva de la teoría de 
+lógica temporal, sino más bien, refrescar los conceptos que sean necesarios 
+para un mayor entendimiento de cómo funciona este proyecto. Se asume que el lector
+posee un cierto entendimiento de los conceptos básicos de Lógica Temporal. \\
+
+Si bien en la Lógica Temporal hay muchas ramas y tópicos, en este proyecto nos 
+centramos en lo que se conoce como CTL, o más bien, Computation Tree Logic. Este
+es un tipo de lógica temporal en el que el se modela el tiempo como una estructura
+de árbol en donde el futuro no está determinado, sino que hay distintos caminos 
+en el futuro donde cualquiera de ellos puede ser el camino que se vaya a realizar.
+
+\subsubsection{Sintaxis y Semántica}
+
+La sintaxis de CTL se puede definir de forma inductiva de la siguiente manera:
+
+\subsubsection{El Algoritmo SAT para \emph{model-checking}}
+\subsection{Notación}
+
+\section{Gramática}
+
+\section{Resolución}
+
+\section{Instalación y Uso}
+
+\section{Trabajo a Futuro}
+
+\section{Referencias}
+
+\end{document}
