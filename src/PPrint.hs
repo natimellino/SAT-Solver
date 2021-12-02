@@ -61,18 +61,19 @@ ppFormula x = render $ ctl2doc (ppCTL x)
 
 ppCTL :: CTL -> String
 -- First, we take care of the synonims patterns so they print correctly
-ppCTL (AU Top p) = uall ++ urombo ++ (ppCTL p) -- AF pattern
-ppCTL (EU Top p) = uexists ++ urombo ++ (ppCTL p) -- EF pattern
-ppCTL (Not (EF (Not p))) = uall ++ usquare ++ (ppCTL p) -- AG pattern
-ppCTL (Not (AF (Not p))) = uexists ++ usquare ++ (ppCTL p) -- EG pattern
+ppCTL (AF p) = uall ++ urombo ++ (ppCTL p) -- AF pattern
+ppCTL (EF p) = uexists ++ urombo ++ (ppCTL p) -- EF pattern
+ppCTL (AG p) = uall ++ usquare ++ (ppCTL p) -- AG pattern
+ppCTL (EG p) = uexists ++ usquare ++ (ppCTL p) -- EG pattern
+ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
+ppCTL Top = utop
 -- Now the rest is the usual pattern matching
 ppCTL Bottom = ubottom
-ppCTL Top = utop
-ppCTL (Atomic v) = v
 ppCTL (Not p) = unot ++ (ppCTL p)
+ppCTL (Atomic v) = v
 ppCTL (And p q) = (ppCTL p) ++ uand ++ (ppCTL q)
 ppCTL (Or p q) = (ppCTL p) ++ uor ++ (ppCTL q)
-ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
+-- ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
 ppCTL (AX p) =  uall ++ ucircle ++ (ppCTL p)
 ppCTL (EX p) =  uexists ++ ucircle ++ (ppCTL p)
 ppCTL (AU p q) =  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"

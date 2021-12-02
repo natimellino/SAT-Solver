@@ -6,13 +6,11 @@ import Data.Set
 type Atomic = String
 
 -- We use a 'data' to represent a logic proposition
-data CTL = Atomic Atomic
+data CTL =  Atomic Atomic
           | Bottom
-          | Top
           | Not CTL
           | And CTL CTL
           | Or CTL CTL
-          | Then CTL CTL
           | AX CTL -- Para todo siguiente
           | EX CTL -- Existe siguiente
           | AU CTL CTL -- For All Until
@@ -37,8 +35,12 @@ pattern AG ctl = Not (EF (Not ctl))
 pattern EG :: CTL -> CTL
 pattern EG ctl = Not (AF (Not ctl))
 
--- pattern THEN
--- completar con mas patterns 
+pattern Then :: CTL -> CTL -> CTL
+pattern Then p q = Or (Not p) q
+
+pattern Top :: CTL
+pattern Top = Not Bottom
+
 
 -- State
 type State = String

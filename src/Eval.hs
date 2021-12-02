@@ -13,8 +13,6 @@ eval mdl = fst $ runState (sat (sctlExpr mdl)) mdl
 
 sat :: MonadState m => CTL -> m (Set State)
 sat Bottom = return empty
-sat Top = do sts <- getStates
-             return sts
 sat (Atomic str) = do vals <- getVals                   
                       return $ getMatchedStates str vals
 sat (Not ctl) = do res <- sat ctl
@@ -26,7 +24,6 @@ sat (And ctl ctl') = do res <- sat ctl
 sat (Or ctl ctl') = do res <- sat ctl
                        res' <- sat ctl'
                        return $ res `union` res'
-sat (Then ctl ctl') = sat (Or (Not ctl) (ctl'))
 sat (EX ctl) = do res <- sat ctl
                   preExists res
 sat (AX ctl) = do res <- sat ctl
