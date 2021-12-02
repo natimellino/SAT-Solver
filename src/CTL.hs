@@ -37,6 +37,9 @@ pattern AG ctl = Not (EF (Not ctl))
 pattern EG :: CTL -> CTL
 pattern EG ctl = Not (AF (Not ctl))
 
+-- pattern THEN
+-- completar con mas patterns 
+
 -- State
 type State = String
 
