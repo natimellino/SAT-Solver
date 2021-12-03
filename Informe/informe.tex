@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, margin=2.54cm]{geometry}
+\usepackage[utf8]{inputenc}
+% \usepackage[spanish, mexico]{babel}
+\usepackage[article]{ragged2e}
+\usepackage{textcomp}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\renewcommand{\contentsname}{Contenidos}
+
+\begin{document}
+% \maketitle
+
+\begin{titlepage}
+    \centering
+    {\bfseries\LARGE Universidad Nacional de Rosario \par}
+    \begin{figure}[h!]
+        \begin{center}
+            \includegraphics[]{unr.png}
+        \end{center}
+      \end{figure}
+    \vspace{1cm}
+    {\scshape\Large Facultad de Ciencias Exactas, Ingeniería y Agrimensura \par}
+    \vspace{3cm}
+    {\scshape\Huge SAT-Solver \par}
+    \vspace{3cm}
+    {\itshape\Large Un evaluador para modelos de lógica temporal \par}
+    \vfill
+    {\Large Autor: \par}
+    {\Large Natalia Mellino \par}
+    \vfill
+    {\Large Diciembre 2021 \par}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Motivación}
+
+\subsection{¿Por qué un DSL para Lógica Temporal?}
+
+La principal motivación de la realización de este proyecto, no es más ni menos
+que poder proveer una herramienta que pueda ser útil al momento de aprender y
+poner en práctica los conocimientos adquiridos de la teoría de Lógica Temporal. \\
+
+Al momento de realizar ejercicios o querer hacer alguna verificación sobre estos
+modelos lógicos, nos encontramos con que no siempre podemos realizar estas tareas 
+de manera rápida y simple como deseamos. Es por ello, que mi intención es poder 
+facilitar en la medida que sea posible a cualquier persona que se encuentre en 
+alguna de las situaciones mencionadas anteriormente.  
+
+\section{Introducción}
+
+\subsection{Un repaso de CTL}
+El objetivo de esta sección no es dar una explicación exhaustiva de la teoría de 
+lógica temporal, sino más bien, refrescar los conceptos que sean necesarios 
+para un mayor entendimiento de cómo funciona este proyecto. Se asume que el lector
+posee un cierto entendimiento de los conceptos básicos de Lógica Temporal. \\
+
+Si bien en la Lógica Temporal hay muchas ramas y tópicos, en este proyecto nos 
+centramos en lo que se conoce como CTL, o más bien, Computation Tree Logic. Este
+es un tipo de lógica temporal en el que el se modela el tiempo como una estructura
+de árbol en donde el futuro no está determinado, sino que hay distintos caminos 
+en el futuro donde cualquiera de ellos puede ser el camino que se vaya a realizar.
+
+\subsubsection{Sintaxis y Semántica}
+
+La \textbf{sintaxis} de CTL se puede definir de forma inductiva de la siguiente manera:
+
+\begin{align*}
+  \phi :: = \top                       \; | \;  
+            \bot                       \; & | \; 
+            p                          \; | \; 
+            \neg \phi                  \; | \;
+            \phi \land \psi            \; | \;
+            \phi \lor \psi             \; | \;
+            \phi \rightarrow \psi      \; | \;
+            \forall \bigcirc \phi      \; | \;
+            \exists \bigcirc \phi      \; | \; \\
+            & \forall [\phi \cup \psi] \; | \;
+            \exists [\phi \cup \psi]   \; | \;
+            \forall \square \phi       \; | \;
+            \exists \square \phi       \; | \;
+            \forall \diamondsuit \phi  \; | \;
+            \exists \diamondsuit \phi 
+\end{align*}
+
+Un \textbf{Modelo} o \textbf{Sistema de transiciones} está formado por una tupla:
+$(S, \rightarrow, I, L)$ donde:
+
+\begin{itemize}
+  \item $S$ es un conjunto finito de estados.
+  \item $I$ es un conjunto de estados iniciales ($I \subseteq S$).
+  \item $\rightarrow \; \subseteq S \times S$ es una relación de transición entre estados
+  \item $L : S \rightarrow \mathcal{P}(AT)$ una función de etiquetado, donde a cada
+        estado se le asigna un conjunto de proposiciones atómicas.
+\end{itemize}
+
+Ahora recordemos cómo era la \textbf{semántica} de estos operadores. Definimos 
+la relación $\vDash$ por inducción en $\phi$:
+
+\begin{itemize}
+  \item $M,  s \nvDash \bot$
+  \item $M, s \vDash p_i \iff p_i \in L(s)$
+  \item $M, s \vDash \neg \phi \iff M, s \nvDash \phi$
+  \item $M, s \vDash \phi \land \psi \iff M, s \vDash \phi $ y $M, s \vDash \psi$
+  \item $M, s \vDash \forall \bigcirc \phi \iff $ para todo $s'$ tal que 
+        $s \rightarrow s'$ se cumple que $M, s \vDash \phi$.
+  \item $M, s \vDash \exists \bigcirc \phi \iff $ para algún $s'$ tal que
+        $s \rightarrow s'$ se cumple que $M, s \vDash \phi$.
+  \item $M, s \vDash \forall [\phi \cup \psi] \iff $ para cada traza
+        $s_0 \rightarrow s_1 \rightarrow ...$ con $s_0 = s$ existe $j \in \mathbb{N}$
+        tal que:
+          \begin{itemize}
+            \item $M, s_j \vDash \psi$
+            \item $M, s_i \vDash \phi$ para todo $i < j$
+          \end{itemize}
+  \item $M, s \vDash \exists [\phi \cup \psi] \iff $ para alguna traza
+        $s_0 \rightarrow s_1 \rightarrow ...$ con $s_0 = s$ existe $j \in \mathbb{N}$
+        tal que:
+          \begin{itemize}
+            \item $M, s_j \vDash \psi$
+            \item $M, s_i \vDash \phi$ para todo $i < j$
+          \end{itemize}
+\end{itemize}
+
+Luego tenemos los \textbf{operadores derivados}:
+
+\begin{itemize}
+  \item $\forall \diamondsuit \phi = \forall [\top \cup \phi]  $
+  \item $\exists \diamondsuit \phi = \exists [\top \cup \phi] $
+  \item $\forall \square \phi = \neg \exists \diamondsuit \neg \phi $
+  \item $\exists \square \phi = \neg \forall \diamondsuit \neg \phi $
+\end{itemize}
+
+\subsubsection{El Algoritmo SAT para \emph{model-checking}}
+\subsection{Notación}
+
+\section{Gramática}
+
+\section{Resolución}
+
+\section{Instalación y Uso}
+
+\section{Trabajo a Futuro}
+
+\section{Referencias}
+
+\end{document}
