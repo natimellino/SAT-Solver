@@ -1,1 +1,4 @@
-STATES = [];RELATIONS = [];VALUATIONS = {}; CTLEXP = AX p THEN NOT EU p r;
+STATES = [s1, e1];
+RELATIONS = [];
+VALUATIONS = {p : [s1]}; 
+CTLEXP = p -> q;

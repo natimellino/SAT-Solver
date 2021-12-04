@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\setlength{\parindent}{0pt}
 
 \renewcommand{\contentsname}{Contenidos}
 
@@ -141,8 +142,91 @@ Luego tenemos los \textbf{operadores derivados}:
   \item $\exists \square \phi = \neg \forall \diamondsuit \neg \phi $
 \end{itemize}
 
+Para los operadores $\rightarrow, \top$ se omitió su semántica ya que las mismas
+se derivan a partir de los otros operadores ya existentes. Esto en realidad vale
+también para varios de los operadores que definimos, en las próximas secciones
+veremos como esto nos sirve para facilitar la implementación del evaluador.
+
 \subsubsection{El Algoritmo SAT para \emph{model-checking}}
+
+Recordemos rápidamente de qué se trataba el algoritmo SAT: dado un modelo y una 
+fórmula CTL, devuelve el conjunto de estados del modelo que satisface dicha 
+fórmula. Esto es, en esencia, el objetivo de este proyecto. Para una fórmula
+y un modelo, nuestro algoritmo se comporta de la siguiente manera:
+
+\begin{itemize}
+  \item $sat(\bot) = \emptyset$
+  \item $sat(p_i) = \{s \in S \; | \; P_i \in L(s) \}$
+  \item $sat(\neg \phi) = S - sat(\phi)$
+  \item $sat(\phi \land \psi) = sat(\phi) \cap sat(\psi)$
+  \item $sat(\phi \lor \psi) = sat(\phi) \cup sat(\psi)$
+  \item $sat(\exists \bigcirc \phi) = pre_{\exists}(\phi)$
+  \item $sat(\forall \bigcirc \phi) = pre_{\forall}(\phi)$
+  \item $sat(\exists [\phi \cup \psi]) = exUntil(sat(\phi), sat(\psi))$
+  \item $sat(\forall [\phi \cup \psi]) = forallUntil(sat(\phi), sat(\psi))$
+  \item $sat(\forall \diamondsuit \phi) = inev(sat(\phi))$
+  \item $sat(\exists \diamondsuit \phi) = exUntil(S, sat(\phi))$
+\end{itemize}
+
+Donde: \\
+
+$preExists(Y) = \{s \in S \; | \; \exists s' : s \rightarrow s' \land s' \in Y\}$ \\
+$preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
+
+\begin{verbatim}
+  exUntil(X, Y):
+    while (Y != Y u (X n preExists(Y))) do:
+      Y <- Y u (X n preExists(Y))
+    return Y
+    
+  forallUntil(X, Y):
+    while (Y != Y u (X n preAll(Y))) do:
+      Y <- Y u (X n preAll(Y))
+    return Y
+
+  inev(Y):
+    while (Y != Y u preAll(Y)) do:
+      Y <- Y u preAll(Y)
+    return Y
+\end{verbatim}
+
 \subsection{Notación}
+
+\begin{center}
+  \begin{tabular}{ | c | c |}
+   \hline
+   \textbf{Operador} & \textbf{Traducción}  \\
+   \hline 
+   $\top$ & TOP  \\  
+   \hline
+   $\bot$ & BT   \\
+   \hline
+   $\neg \phi$ & !$\phi$   \\
+   \hline
+   $\phi \land \psi$ & $\phi \;  \&  \; \psi$   \\
+   \hline
+   $\phi \lor \psi$ & $\phi \; | \;  \psi$   \\
+   \hline
+   $\phi \rightarrow \psi$ & $\phi$ \texttt{->} $\psi$   \\
+   \hline
+   $\forall \bigcirc \phi$ & AX  $\phi$ \\
+   \hline
+   $\exists \bigcirc \phi$ & EX  $\phi$ \\
+   \hline
+   $\forall [\phi \cup \psi]$ & AU $\phi$  \\
+   \hline
+   $\exists [\phi \cup \psi]$ & EU $\phi$  \\
+   \hline
+   $\forall \square \phi$ & AG   $\phi$\\
+   \hline
+   $\exists \square \phi$ & EG   $\phi$\\
+   \hline
+   $\forall \diamondsuit \phi$ & AF $\phi$  \\
+   \hline
+   $\exists \diamondsuit \phi$ & EF $\phi$   \\
+   \hline
+  \end{tabular}
+  \end{center}
 
 \section{Gramática}
 

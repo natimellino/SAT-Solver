@@ -198,11 +198,11 @@ lexer4states (';':cs) = TSemicolon : lexer cs
 lexer4states ('=':cs) = TEqual : lexer4states cs
 lexer4states (c:cs)
              | isSpace c = lexer4states cs
-             | isAlpha c = lexState (c:cs)
+             | isAlphaNum c = lexState (c:cs)
 
 lexState :: String -> [Token]
 lexState [] = []
-lexState cs = case span isAlpha cs of  
+lexState cs = case span isAlphaNum cs of  
                 (var, rest) -> (TState var) : lexer4states rest
 
 -- Relations
@@ -224,7 +224,7 @@ lexRelation (')':cs) = TParenRight : lexer4relations cs
 lexRelation (',':cs) = TComma : lexRelation cs
 lexRelation css@(c:cs)
                 | isSpace c = lexRelation cs
-                | isAlpha c = case span isAlpha css of 
+                | isAlpha c = case span isAlphaNum css of 
                                 (var, rest) -> (TState var) : lexRelation rest
 
 -- Valuations
@@ -243,7 +243,7 @@ lexValuation :: String -> [Token]
 lexValuation [] = []
 lexValuation (':':cs) = TDDot : valuationStates cs
 lexValuation css@(c:cs) | isSpace c = lexValuation cs
-                        | isAlpha c = case span isAlpha css of
+                        | isAlpha c = case span isAlphaNum css of
                                         (var, rest) -> (TAt var) : lexValuation rest
 
 valuationStates :: String -> [Token]
@@ -252,7 +252,7 @@ valuationStates ('[':cs) = TLBracket : valuationStates cs
 valuationStates (',':cs) = TComma : valuationStates cs
 valuationStates (']':cs) = TRBracket : lexer4valuations cs
 valuationStates css@(c:cs) | isSpace c = valuationStates cs
-                           | isAlpha c = case span isAlpha css of 
+                           | isAlpha c = case span isAlphaNum css of 
                                             (var, rest) -> (TState var) : valuationStates rest
 
 }

@@ -37,7 +37,8 @@ printCTL ctl = putStrLn (ppResult  "SAT FOR " ++ (ppFormula ctl) ++ (ppResult ":
 printResult :: Set State -> IO ()
 printResult sts = go (toList sts)
                   where go [] = putStrLn uemptyset
-                        go xs = putStrLn (intersperse ' ' (concat xs))
+                        go xs = let ys = Data.List.map (\s -> s ++ ",")xs 
+                                in putStrLn (intersperse ' ' (concat ys))
 
 verifyModel :: SModel -> (Bool, String)
 verifyModel smodel = let (isOkRels, msg1) = verifyRels (srels smodel) (toList (ssts smodel))
