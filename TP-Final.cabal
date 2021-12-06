@@ -1,8 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
+--
+-- hash: 9a6bdbfd0cdd1615b4cea3bc8c75bdda8b236afbe244f1f9a1ca47f794e9988c
 
 name:           TP-Final
 version:        0.1.0.0

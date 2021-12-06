@@ -49,10 +49,6 @@ import Data.List
 
 %%
 
--- asociatividad y prioridad de las formulas ctl
--- es realmente necesario los reverse???
--- no se
-
 fields :: { Model }
 fields :   States     '=' sts   ';'       
            Relations  '=' rels  ';'     
@@ -174,7 +170,7 @@ lexerCTL (';':cs) = TSemicolon : lexer cs
 
 lexVar :: String -> [Token]
 lexVar ('-':'>':cs) = TThen : lexerCTL cs
-lexVar cs = case span isAlpha cs of 
+lexVar cs = case span isAlphaNum cs of 
                 ("BT", rest) -> TBT : lexerCTL rest
                 ("TOP", rest) -> TTop : lexerCTL rest
                 ("AX", rest) -> TAx : lexerCTL rest

@@ -190,7 +190,97 @@ $preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
     return Y
 \end{verbatim}
 
+\section{Gramática}
+
+DAR PRECEDENCIA
+
+\subsection{Sintaxis Abstracta}
+
+jeje salu3
+
+\subsection{Sintaxis Concreta}
+  Definimos la sintaxis concreta del DSL a partir de la siguiente gramática:
+
+  \begin{verbatim}
+    fields ::= States '=' sts ';' 
+               Relations '=' rels ';'
+               Valuations '=' vals ';'
+               CTLExp '=' ctl ';'
+
+    vals ::= '{' '}' | '{' valuations '}'
+
+    valuations ::= valuation | valuation ',' valuations
+
+    valuation ::= AT ':' sts
+    
+    sts ::= '[' states ']' | '[' ']'
+
+    states ::= State | State ',' states
+
+    rels ::= '[' ']' | '[' relations ']'
+
+    relations ::= relation | relation ',' relations
+
+    relation ::= '(' State ',' State ')'
+
+    ctl ::= AT                        
+          | BT                        
+          | TOP                       
+          | '!' ctl                  
+          | ctl '&' ctl               
+          | ctl '|' ctl              
+          | ctl '->' ctl              
+          | AX ctl                     
+          | EX ctl                     
+          | AU ctl ctl                 
+          | EU ctl ctl                 
+          | AF ctl                     
+          | EF ctl                     
+          | AG ctl                     
+          | EG ctl                     
+          | '(' ctl ')'               
+
+  \end{verbatim}
+
+  % \begin{align*}
+  %   fields ::=& \; \text{'States'} \; \text{'='} \; sts \; \text{';'} \\
+  %            =& \; \text{'States'} \; \text{'='} \; sts \; \text{';'} \\
+                
+  %   letter ::=& \; \text{'a'} \; | \; \dotsc \; | \; \text{'Z'} \\
+  %   nat ::=& \; digit \; | \; digit \; nat \\
+  %   var ::=& \; letter \; | \; letter \; var \\
+  %   intexp ::=& \; nat \\
+  %             &| \; var \\
+  %             &| \; \text{'-'} \; intexp \\
+  %             &| \;\; intexp \; \text{'+'}  \; intexp \\
+  %             &| \;\; intexp \; \text{'-'}  \; intexp \\
+  %             &| \;\; intexp \; \text{'*'}  \; intexp \\
+  %             &| \;\; intexp \; \text{'/'}  \; intexp \\
+  %             &| \;\; \text{'('} \; intexp \; \text{')'} \\
+  %             &| \;\; var \; \text{'='} \; intexp \\
+  %             &| \;\; intexp \; \text{','} \; intexp \\
+  %   boolesxp ::=& \; \text{'true'} \; | \; \text{'false'} \\
+  %               &| \;\; intexp \; \text{'=='} \; intexp \\
+  %               &| \;\; intexp \; \text{'!='}  \; intexp \\
+  %               &| \;\; intexp \; \text{'$<$'}  \; intexp \\
+  %               &| \;\; intexp \; \text{'$>$'}  \; intexp \\
+  %               &| \;\; boolexp \; \text{'\&\&'}  \; boolexp \\
+  %               &| \;\; boolexp \; \text{'$\vert\vert$'}  \; boolexp \\
+  %               &| \;\; \text{'!'} \; boolexp \\
+  %               &| \;\; \text{'('} \; boolexp \; \text{')'} \\
+  %   com ::=& \; \textbf{skip} \\
+  %          &| \;\; var \; \text{'='} \; intexp \\
+  %          &| \;\; comm \; \text{';'} \; comm \\
+  %          &| \;\; \text{'if'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
+  %          &| \;\; \text{'if'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'}  \;\; \text{'else'} \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
+  %          &| \;\; \text{'while'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
+  %   \end{align*}
 \subsection{Notación}
+
+Para más simplicidad al momento de parsear el modelo, cada símblolo
+se representa de manera distinta en el código. A modo de referencia,
+se puede consultar de forma rápida la siguiente tabla para entender
+qué significa la notación utilizada a lo largo de todo el programa.
 
 \begin{center}
   \begin{tabular}{ | c | c |}
@@ -226,16 +316,92 @@ $preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
    $\exists \diamondsuit \phi$ & EF $\phi$   \\
    \hline
   \end{tabular}
-  \end{center}
-
-\section{Gramática}
+  \end{center} 
 
 \section{Resolución}
 
+\subsection{Parseo}
+
+El modelo, junto con la fórmula a evaluar, es pasado en un archivo con
+extensión \texttt{.sat} en el formato que explicita la sintaxis concreta
+presentada en la sección anterior. Además, en la carpeta \texttt{test}
+se pueden encontrar algunos tests a modo de ejemplo. \\
+
+Se hizo uso de la herramienta \emph{Happy}, un generador de parsers
+para Haskell, que dada una gramática específica, nos permite generar
+un archivo Haskell con nuestro parser. Esta herramienta fue muy útil
+ya que nos permitió de manera simple, especificar la asociatividad y
+precedencia de los operadores. Además de que usando Happy, no 
+tenemos que preocuparnos por la recursión a izquierda, lo cual
+facilitó mucho el trabajo. \\
+
+Podemos encontrar la implementación del parser en el archivo
+\texttt{src/Parse.y}
+
+\subsection{Uso de las Mónadas}
+
+Si vamos al archivo \texttt{src/Monads.hs} podemos ver que se hizo
+uso de la \textbf{mónada State} para llevar el modelo (estados,
+transiciones, valuaciones y fórmula) como estado global, ya que esto
+nos permitió implementar el evaluador de forma más simple.
+
+\subsection{Evaluación}
+
+El evaluador es la parte principal del proyecto, es el que se encarga
+de implementar y calcular nuestro algoritmo SAT. En \texttt{src/Eval.hs}
+podemos ver su implementación utilizando mónadas. La misma no difiere
+mucho de la explicación del algoritmo presentada al principio del 
+informe, sigue exactamente la misma idea para implementar el algoritmo
+y las funciones auxiliares.
+
+\subsection{Otros Archivos}
+
+\begin{itemize}
+  \item En \texttt{src/CTL.hs} se definen las estucturas de datos
+        utilizadas para representar nuestro modelo. Si recordamos 
+        nuestras clases de lógica, podemos advertir que la gramática para fórmulas CTL
+        se puede simplificar bastante en el código utilizando el concepto de \textbf{conjuntos completos de conectivos}.
+        Entonces, toda la gramática que representa a las fórmulas CTL, contiene
+        \textbf{azucar sintáctico}. Al momento de parsear la fórmula, en Haskell, 
+        utilizamos los \emph{patterns}, que nos permiten representar a términos
+        que están compuestos por otros. Por ejemplo, si parseamos la fórmula:
+        $p \rightarrow q$, en Haskell, la misma será tratada 'internamente' como 
+        $\neg p \lor q$. Permitiendonos así reducir la cantidad de términos
+        a tener en cuenta al momento de implementar funciones en Haskell. 
+  \item En \texttt{src/PPrint.hs} se implementó un simple pretty printer
+        para mostrar los resultados en pantalla de manera más elegante.
+  \item En \texttt{src/Main.hs} simplemente se encuentran las funciones que
+        se encargan de:
+        \begin{itemize}
+          \item Leer y parsear el archivo de entrada que contiene el modelo.
+          \item Llamar al evaluador con el modelo dado.
+          \item Tomar el resultado devuelto y mostrarlo en pantalla.
+        \end{itemize}
+        En el main, también se realiza cierto chequeo sobre el modelo, para
+        advertir al usuario sobre los errores que se puedan encontrar.
+\end{itemize}
+
 \section{Instalación y Uso}
+
+Para comenzar a usar el evaluador basta con lo siguiente:
+
+\begin{itemize}
+  \item Clonar el repositorio: \\
+        \texttt{\$ git clone https://github.com/natimellino/SAT-Solver.git}
+  \item Una vez dentro del repositorio, correr: \\
+        \texttt{\$ stack setup}
+  \item Para compilar corremos: \\
+        \texttt{\$ stack build}
+  \item Finalmente, para ejecutar nuestro evaluador con un modelo: \\
+        \texttt{\$ stack exec TP-Final-exe "/path/to/file.sat"}
+\end{itemize}
 
 \section{Trabajo a Futuro}
 
+ahhhhreeeeeeeeeeeeeeeeeeeeeee
+
 \section{Referencias}
+
+??????????????????????????????????????
 
 \end{document}

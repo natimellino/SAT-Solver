@@ -13,7 +13,8 @@ import PPrint
 main :: IO ()
 main = do args <- getArgs
           putStrLn $ ppPrompt "Reading file..."
-          contents <- readFile $ head args
+          let filename = head args
+          contents <- readFile filename
           let smodel = parseModel contents
           putStrLn $ ppPrompt "Verifying model ..."
           let (verified, errorMsg) = verifyModel smodel
@@ -37,8 +38,9 @@ printCTL ctl = putStrLn (ppResult  "SAT FOR " ++ (ppFormula ctl) ++ (ppResult ":
 printResult :: Set State -> IO ()
 printResult sts = go (toList sts)
                   where go [] = putStrLn uemptyset
-                        go xs = let ys = Data.List.map (\s -> s ++ ",")xs 
-                                in putStrLn (intersperse ' ' (concat ys))
+                        go xs = let ys = Data.List.map (\s -> s ++ " ")xs
+                                in putStrLn (concat ys) 
+                                -- in putStrLn (intersperse ' ' (concat ys))
 
 verifyModel :: SModel -> (Bool, String)
 verifyModel smodel = let (isOkRels, msg1) = verifyRels (srels smodel) (toList (ssts smodel))

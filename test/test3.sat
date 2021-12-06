@@ -1,4 +1,4 @@
 STATES = [s1, B, C, D, E]; 
 RELATIONS = [(s1, D), (D, C), (C, B), (B, s1), (B, E), (E, B)]; 
-VALUATIONS = {r : [s1, D], a: [B, D], v : [C], n : [E]}; 
-CTLEXP = TOP;
+VALUATIONS = {r1 : [s1, D], a: [B, D], v : [C], n : [E]}; 
+CTLEXP = r1;
