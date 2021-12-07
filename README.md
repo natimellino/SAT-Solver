@@ -36,12 +36,14 @@ The syntax used to write the CTL formula in the .sat file is pretty simple:
 | p -> q       | p → q              |
 | AX p         | ∀◯                 | 
 | EX p         | ∃◯                 |
-| AU p         | ∀ [p U q]          |
-| EU p         | ∃ [p U q]          |
+| A [ p U q ]  | ∀ [p U q]          |
+| E [ p U q ]  | ∃ [p U q]          |
 | AF p         | ∀◊                 |
 | EF p         | ∃◊                 |
 | AG p         | ∀□                 |
 | EG p         | ∃□                 |
+
+Using spaces between U, AF, EF, AG, EG, AX, EX and a formula is recommended to avoid parse errors.
 
 ### Precedence
 
@@ -51,9 +53,9 @@ that are on the same item have the same precedence.
 
 - Left associative: &, \|
 
-- Left associative: ->, EU, AU
+- Left associative: ->
 
-- !, AX, EX, EF, AF, AG, EG
+- !, AX, EX, EF, AF, AG, EG, EU, AU
 
 If you are not sure you can always use parentheses to explicit the order you want 
 in your formula.

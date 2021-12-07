@@ -229,8 +229,8 @@ $preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
           | \textcolor{blue}{ctl} '->' \textcolor{blue}{ctl}              
           | AX \textcolor{blue}{ctl}                     
           | EX \textcolor{blue}{ctl}                     
-          | AU \textcolor{blue}{ctl} \textcolor{blue}{ctl}                 
-          | EU \textcolor{blue}{ctl} \textcolor{blue}{ctl}                 
+          | A '[' \textcolor{blue}{ctl} U  \textcolor{blue}{ctl} ']'                 
+          | E '[' \textcolor{blue}{ctl} U  \textcolor{blue}{ctl} ']'                 
           | AF \textcolor{blue}{ctl}                     
           | EF \textcolor{blue}{ctl}                     
           | AG \textcolor{blue}{ctl}                     
@@ -245,9 +245,9 @@ $preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
 
   \begin{itemize}
     \item Asocian a izquierda: $\land (\&) , \lor (|)$
-    \item Asocian a izquierda: $\rightarrow (\texttt{->}), \forall \cup (AU), \exists \cup (EU)$
-    \item !, $\forall \bigcirc (AX), \exists \bigcirc (EX), \forall \diamondsuit (AF), \exists \diamondsuit (EF),
-          \forall \square (AG), \exists \square (EG)$
+    \item Asocian a izquierda: $\rightarrow (\texttt{->})$
+    \item No asociativos: !, $\forall \bigcirc (AX), \exists \bigcirc (EX), \forall \diamondsuit (AF), \exists \diamondsuit (EF),
+          \forall \square (AG), \exists \square (EG), \forall \cup (AU), \exists \cup (EU)$
   \end{itemize}
 
   Entonces por ejemplo: $p \land q \rightarrow r$ se asocia: $p \land (q \rightarrow r)$
@@ -320,8 +320,12 @@ precedencia de los operadores. Además de que usando Happy, no
 tenemos que preocuparnos por la recursión a izquierda, lo cual
 facilitó mucho el trabajo. \\
 
-Podemos encontrar la implementación del parser en el archivo
-\texttt{src/Parse.y}
+Podemos encontrar la implementación del parser en el archivo  \texttt{src/Parse.y}. \\
+
+\textbf{Nota:} al pasar la fórmula CTL en el archivo de entrada es recomendable
+utilizar espacios entre los operadores: AF, EF, AG, EG, AX, EX, y U para evitar
+posibles errores de parseo. Por ejemplo, en vez de escribir \texttt{q\&AGp}, escribir:
+\texttt{q \& AG p}
 
 \subsection{Uso de las Mónadas}
 

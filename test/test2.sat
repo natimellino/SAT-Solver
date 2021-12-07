@@ -2,4 +2,4 @@ STATES = [s0, s1, s2, s3];
 RELATIONS = [(s0, s1), (s1, s2), (s2, s3), (s3, s3), 
              (s0, s3), (s2, s1), (s3, s1), (s3, s0)];
 VALUATIONS = {c : [s0], b:[s1, s2], t:[s2]}; 
-CTLEXP = EU !c (b & !t);
+CTLEXP = E [ !c U  b & !t ] ;

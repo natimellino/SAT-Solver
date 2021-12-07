@@ -41,9 +41,9 @@ AF v ---> [A, C, D]
 AF a ---> [A, B, C, D, E]
 AG a ---> []
 AG AF a  ---> [A, B, C, D, E]
-AU n !n  ---> [A, B, C, D, E]
-AU !n n  ----> [E]
-EU n r  ----> [A, D]
+A [ n  U !n]  ---> [A, B, C, D, E]
+A [ !n U  n]  ----> [E]
+E [ n  U r ]  ----> [A, D]
 r -> AF v ---> [A, B, C, D, E]
 ---------------all tests passed until here---------------
 

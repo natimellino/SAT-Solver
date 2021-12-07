@@ -18,11 +18,11 @@ import Data.List
     '&'         { TAnd }
     '|'         { TOr }
     '->'        {TThen}
-    EU          { TEu }
-    AU          { TAu }
+    E           { TE }
+    A           { TA }
+    U           { TUntil} 
     AX          { TAx }
     EX          { TEx }
-    E           { TExists }
     AF          { TAf }
     EF          { TEf }
     AG          { TAg }
@@ -44,8 +44,8 @@ import Data.List
     CTLExp      { TCTLExp }
 
 %left '&' '|' 
-%left '->' EU AU
-%nonassoc '!' AF EF AG EG AX EX AE 
+%left '->' 
+%nonassoc '!' AF EF AG EG AX EX AE E A
 
 %%
 
@@ -93,8 +93,8 @@ ctl : AT                        { Atomic  $1 }
     | ctl '->' ctl              { Then $1 $3 }
     | AX ctl                    { AX $2 }
     | EX ctl                    { EX $2 }
-    | AU ctl ctl                { AU $2 $3 }
-    | EU ctl ctl                { EU $2 $3 }
+    | A '[' ctl U ctl ']'       { AU $3 $5 }
+    | E '[' ctl U ctl ']'       { EU $3 $5 }
     | AF ctl                    { AF $2 }
     | EF ctl                    { EF $2 }
     | AG ctl                    { AG $2 }
@@ -112,11 +112,11 @@ data Token =  TAt String
             | TThen
             | TAx
             | TEx
-            -- | TAll
+            | TAll
             | TExists
-            -- | TUntil
-            | TEu
-            | TAu
+            | TUntil
+            | TE
+            | TA
             | TAf
             | TEf
             | TAg
@@ -179,8 +179,9 @@ lexVar cs = case span isAlphaNum cs of
                 ("EF", rest) -> TEf : lexerCTL rest
                 ("AG", rest) -> TAg : lexerCTL rest
                 ("EG", rest) -> TEg : lexerCTL rest
-                ("EU", rest) -> TEu : lexerCTL rest
-                ("AU", rest) -> TAu : lexerCTL rest
+                ("E", rest) -> TE : lexerCTL rest
+                ("A", rest) -> TA : lexerCTL rest
+                ("U", rest) -> TUntil : lexerCTL rest
                 (var, rest) -> (TAt var) : lexerCTL rest
 
 -- States
