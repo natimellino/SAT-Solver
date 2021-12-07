@@ -4,14 +4,13 @@ import CTL
 import Control.Monad ( liftM, ap )
 import Data.Set              
 
+-- Definimos la mónada state.
+
 class Monad m => MonadState m where
     getStates :: m (Set State)
     getCTL    :: m CTL
     getRels   :: m [Relation]
     getVals   :: m [Valuation]
-
-class Monad m => MonadError m where
-    throw :: Error -> m a
 
 -- Mónada de estado
 
@@ -28,6 +27,8 @@ instance Applicative St where
 instance Monad St where
     return x = State (\s -> (x, s))
     m >>= f = State (\s -> let (v, s') = runState m s in runState (f v) s')
+
+-- Damos la instancia de la mónada State
 
 instance MonadState St where
     getStates = State (\s -> (ssts s, s))

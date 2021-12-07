@@ -12,9 +12,12 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
 \setlength{\parindent}{0pt}
 
 \renewcommand{\contentsname}{Contenidos}
+\renewcommand\refname{Referencias}
 
 \begin{document}
 % \maketitle
@@ -70,11 +73,11 @@ Si bien en la Lógica Temporal hay muchas ramas y tópicos, en este proyecto nos
 centramos en lo que se conoce como CTL, o más bien, Computation Tree Logic. Este
 es un tipo de lógica temporal en el que el se modela el tiempo como una estructura
 de árbol en donde el futuro no está determinado, sino que hay distintos caminos 
-en el futuro donde cualquiera de ellos puede ser el camino que se vaya a realizar.
+en el futuro donde cualquiera de ellos puede ser el camino que se vaya a realizar \cite{logicbook}.
 
 \subsubsection{Sintaxis y Semántica}
 
-La \textbf{sintaxis} de CTL se puede definir de forma inductiva de la siguiente manera:
+La \textbf{sintaxis} de CTL se puede definir de forma inductiva de la siguiente manera \cite{theory}:
 
 \begin{align*}
   \phi :: = \top                       \; | \;  
@@ -151,7 +154,7 @@ veremos como esto nos sirve para facilitar la implementación del evaluador.
 
 Recordemos rápidamente de qué se trataba el algoritmo SAT: dado un modelo y una 
 fórmula CTL, devuelve el conjunto de estados del modelo que satisface dicha 
-fórmula. Esto es, en esencia, el objetivo de este proyecto. Para una fórmula
+fórmula \cite{theory}. Esto es, en esencia, el objetivo de este proyecto. Para una fórmula
 y un modelo, nuestro algoritmo se comporta de la siguiente manera:
 
 \begin{itemize}
@@ -192,89 +195,71 @@ $preAll(Y) = \{s \in S \; | \; \forall s' : s \rightarrow s', s' \in Y\}$
 
 \section{Gramática}
 
-DAR PRECEDENCIA
-
-\subsection{Sintaxis Abstracta}
-
-jeje salu3
-
 \subsection{Sintaxis Concreta}
   Definimos la sintaxis concreta del DSL a partir de la siguiente gramática:
 
-  \begin{verbatim}
-    fields ::= States '=' sts ';' 
-               Relations '=' rels ';'
-               Valuations '=' vals ';'
-               CTLExp '=' ctl ';'
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \textcolor{blue}{fields} ::= States '=' \textcolor{blue}{sts} ';' 
+               Relations '=' \textcolor{blue}{rels} ';'
+               Valuations '=' \textcolor{blue}{vals} ';'
+               CTLExp '=' \textcolor{blue}{ctl} ';'
 
-    vals ::= '{' '}' | '{' valuations '}'
+    \textcolor{blue}{vals} ::= '\{' '\}' | '\{' \textcolor{blue}{valuations} '\}'
 
-    valuations ::= valuation | valuation ',' valuations
+    \textcolor{blue}{valuations} ::= \textcolor{blue}{valuation} | \textcolor{blue}{valuation} ',' \textcolor{blue}{valuations}
 
-    valuation ::= AT ':' sts
+    \textcolor{blue}{valuation} ::= AT ':' \textcolor{blue}{sts}
     
-    sts ::= '[' states ']' | '[' ']'
+    \textcolor{blue}{sts} ::= '[' \textcolor{blue}{states} ']' | '[' ']'
 
-    states ::= State | State ',' states
+    \textcolor{blue}{states} ::= State | State ',' \textcolor{blue}{states}
 
-    rels ::= '[' ']' | '[' relations ']'
+    \textcolor{blue}{rels} ::= '[' ']' | '[' \textcolor{blue}{relations} ']'
 
-    relations ::= relation | relation ',' relations
+    \textcolor{blue}{relations} ::= \textcolor{blue}{relation} | \textcolor{blue}{relation} ',' \textcolor{blue}{relations}
 
-    relation ::= '(' State ',' State ')'
+    \textcolor{blue}{relation} ::= '(' State ',' State ')'
 
-    ctl ::= AT                        
+    \textcolor{blue}{ctl} ::= AT                        
           | BT                        
           | TOP                       
-          | '!' ctl                  
-          | ctl '&' ctl               
-          | ctl '|' ctl              
-          | ctl '->' ctl              
-          | AX ctl                     
-          | EX ctl                     
-          | AU ctl ctl                 
-          | EU ctl ctl                 
-          | AF ctl                     
-          | EF ctl                     
-          | AG ctl                     
-          | EG ctl                     
-          | '(' ctl ')'               
+          | '!' \textcolor{blue}{ctl}                  
+          | \textcolor{blue}{ctl} '&' \textcolor{blue}{ctl}               
+          | \textcolor{blue}{ctl} '|' \textcolor{blue}{ctl}              
+          | \textcolor{blue}{ctl} '->' \textcolor{blue}{ctl}              
+          | AX \textcolor{blue}{ctl}                     
+          | EX \textcolor{blue}{ctl}                     
+          | AU \textcolor{blue}{ctl} \textcolor{blue}{ctl}                 
+          | EU \textcolor{blue}{ctl} \textcolor{blue}{ctl}                 
+          | AF \textcolor{blue}{ctl}                     
+          | EF \textcolor{blue}{ctl}                     
+          | AG \textcolor{blue}{ctl}                     
+          | EG \textcolor{blue}{ctl}                     
+          | '(' \textcolor{blue}{ctl} ')'               
 
-  \end{verbatim}
+  \end{Verbatim}
 
-  % \begin{align*}
-  %   fields ::=& \; \text{'States'} \; \text{'='} \; sts \; \text{';'} \\
-  %            =& \; \text{'States'} \; \text{'='} \; sts \; \text{';'} \\
-                
-  %   letter ::=& \; \text{'a'} \; | \; \dotsc \; | \; \text{'Z'} \\
-  %   nat ::=& \; digit \; | \; digit \; nat \\
-  %   var ::=& \; letter \; | \; letter \; var \\
-  %   intexp ::=& \; nat \\
-  %             &| \; var \\
-  %             &| \; \text{'-'} \; intexp \\
-  %             &| \;\; intexp \; \text{'+'}  \; intexp \\
-  %             &| \;\; intexp \; \text{'-'}  \; intexp \\
-  %             &| \;\; intexp \; \text{'*'}  \; intexp \\
-  %             &| \;\; intexp \; \text{'/'}  \; intexp \\
-  %             &| \;\; \text{'('} \; intexp \; \text{')'} \\
-  %             &| \;\; var \; \text{'='} \; intexp \\
-  %             &| \;\; intexp \; \text{','} \; intexp \\
-  %   boolesxp ::=& \; \text{'true'} \; | \; \text{'false'} \\
-  %               &| \;\; intexp \; \text{'=='} \; intexp \\
-  %               &| \;\; intexp \; \text{'!='}  \; intexp \\
-  %               &| \;\; intexp \; \text{'$<$'}  \; intexp \\
-  %               &| \;\; intexp \; \text{'$>$'}  \; intexp \\
-  %               &| \;\; boolexp \; \text{'\&\&'}  \; boolexp \\
-  %               &| \;\; boolexp \; \text{'$\vert\vert$'}  \; boolexp \\
-  %               &| \;\; \text{'!'} \; boolexp \\
-  %               &| \;\; \text{'('} \; boolexp \; \text{')'} \\
-  %   com ::=& \; \textbf{skip} \\
-  %          &| \;\; var \; \text{'='} \; intexp \\
-  %          &| \;\; comm \; \text{';'} \; comm \\
-  %          &| \;\; \text{'if'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
-  %          &| \;\; \text{'if'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'}  \;\; \text{'else'} \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
-  %          &| \;\; \text{'while'} \;\;boolexp \;\; \text{'\{'} \;\; comm \;\; \text{'\}'} \\
-  %   \end{align*}
+  Para las fórmulas CTL, el \textbf{orden de precedencia} utilizado es el siguiente,
+  comenzando desde los que tienen menos precedencia hasta los que más tienen.
+  Dos o más operadores en el mismo item indican que la precedencia es la misma:
+
+  \begin{itemize}
+    \item Asocian a izquierda: $\land (\&) , \lor (|)$
+    \item Asocian a izquierda: $\rightarrow (\texttt{->}), \forall \cup (AU), \exists \cup (EU)$
+    \item !, $\forall \bigcirc (AX), \exists \bigcirc (EX), \forall \diamondsuit (AF), \exists \diamondsuit (EF),
+          \forall \square (AG), \exists \square (EG)$
+  \end{itemize}
+
+  Entonces por ejemplo: $p \land q \rightarrow r$ se asocia: $p \land (q \rightarrow r)$
+  ya que $\rightarrow$ tiene más precedencia que $\land$. \\
+  
+  En los casos de los operadores que tienen la misma precedencia, se utiliza
+  la asociación a izquierda, esto significa que si escribimos: $p \land q \lor r$, 
+  este se asociará a la izquierda: $(p \land q) \lor r$. \\
+
+  \textbf{Observación:} siempre es posible hacer uso de los parentesis para 
+  explicitar el orden deseado de los operadores en una determinada fórmula.
+
 \subsection{Notación}
 
 Para más simplicidad al momento de parsear el modelo, cada símblolo
@@ -362,20 +347,22 @@ y las funciones auxiliares.
         nuestras clases de lógica, podemos advertir que la gramática para fórmulas CTL
         se puede simplificar bastante en el código utilizando el concepto de \textbf{conjuntos completos de conectivos}.
         Entonces, toda la gramática que representa a las fórmulas CTL, contiene
-        \textbf{azucar sintáctico}. Al momento de parsear la fórmula, en Haskell, 
-        utilizamos los \emph{patterns}, que nos permiten representar a términos
-        que están compuestos por otros. Por ejemplo, si parseamos la fórmula:
-        $p \rightarrow q$, en Haskell, la misma será tratada 'internamente' como 
-        $\neg p \lor q$. Permitiendonos así reducir la cantidad de términos
-        a tener en cuenta al momento de implementar funciones en Haskell. 
+        \textbf{azucar sintáctico}. Al momento de parsear la fórmula en el programa, 
+        utilizamos los \emph{patterns} de Haskell, que nos permiten representar a términos
+        compuestos por otros. Por ejemplo, si parseamos la fórmula:
+        $p \rightarrow q$ en nuestro programa, la misma será tratada 'internamente' como 
+        $\neg p \lor q$ y la evaluación se realizará sobre esta última fórmula, 
+        que es equivalente a la primera, permitiendonos así reducir la cantidad de términos
+        distintos a tener en cuenta al momento de implementar funciones en Haskell. 
   \item En \texttt{src/PPrint.hs} se implementó un simple pretty printer
         para mostrar los resultados en pantalla de manera más elegante.
-  \item En \texttt{src/Main.hs} simplemente se encuentran las funciones que
+  \item En \texttt{app/Main.hs} simplemente se encuentran las funciones que
         se encargan de:
         \begin{itemize}
           \item Leer y parsear el archivo de entrada que contiene el modelo.
           \item Llamar al evaluador con el modelo dado.
-          \item Tomar el resultado devuelto y mostrarlo en pantalla.
+          \item Tomar el resultado devuelto y mostrarlo en pantalla utilizando 
+          las funciones de \texttt{src/PPrint.hs}.
         \end{itemize}
         En el main, también se realiza cierto chequeo sobre el modelo, para
         advertir al usuario sobre los errores que se puedan encontrar.
@@ -398,10 +385,30 @@ Para comenzar a usar el evaluador basta con lo siguiente:
 
 \section{Trabajo a Futuro}
 
-ahhhhreeeeeeeeeeeeeeeeeeeeeee
+\begin{itemize}
+  \item Implementar un mejor manejo de errores en el parser, que nos permita 
+  identificar con más precisión cuáles son los errores de sintaxis en el archivo
+  de entrada.
+  \item Hacer una versión interactiva del programa, esta nos podría permitir
+  modificar el modelo pasado como argumento sin tener que volver a ejecutar el
+  programa. Esto se realizaría agregando funciones que permitan modificar el 
+  estado de nuestra mónada que es el que lleva el modelo.
+  \item Una vez que se tenga una versión interactiva del programa se pueden
+  agregar más comandos que el de simplemente evaluar un modelo, podría ser por
+  ejemplo imprimir en pantalla la fórmula o el modelo (mejorando nuestro pretty
+  printer para mostrar resultados más elegantes); y también proveer los comandos
+  que nos permiten modificar nuestro modelo de entrada, o bien, pasar un modelo nuevo,
+  haciendo posible lo mencionado en el apartado anterior.
+\end{itemize}
 
-\section{Referencias}
+\newpage
 
-??????????????????????????????????????
+\begin{thebibliography}{9}
+  \bibitem{logicbook}
+  Michael Huth, Mark Ryan - \emph{Logic in computer science modelling and reasoning 
+  about systems}, Cambridge University Press (2004).
+  \bibitem{theory}
+  Diapositivas de teoría de \emph{Lógica Temporal} de Dante Zanarini, FCEIA (año 2019).
+\end{thebibliography}
 
 \end{document}

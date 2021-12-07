@@ -1,4 +1,6 @@
-STATES = [S, R, T, U]; 
-RELATIONS = [(S, R), (R, T), (T, U), (S, T)]; 
-VALUATIONS = {p : [S, R, T], q: [T]}; 
-CTLEXP = p | q;
+STATES = [s0, s1, s2, s3, s4, s5]; 
+RELATIONS = [(s0, s1), (s0, s4), (s1, s2), (s2, s4),
+             (s3, s2), (s3, s0), (s3, s3), (s4, s3),
+             (s4, s1), (s4, s5), (s5, s5), (s5, s0)]; 
+VALUATIONS = {a : [s1, s2, s3], b: [s2, s4, s5]}; 
+CTLEXP = p & q | r;

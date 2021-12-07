@@ -17,7 +17,7 @@ data CTL =  Atomic Atomic
           | EU CTL CTL -- Exists Until
           deriving Show
 
--- We use pattern synonyms for derivated operators
+-- We use pattern synonyms for derivated operators to simplify code.
 
 -- Para todo rombo
 pattern AF :: CTL -> CTL
@@ -41,7 +41,6 @@ pattern Then p q = Or (Not p) q
 pattern Top :: CTL
 pattern Top = Not Bottom
 
-
 -- State
 type State = String
 
@@ -59,13 +58,12 @@ data Model = Mdl {
     vals    :: [Valuation] 
 } deriving Show
 
+-- We use this SModel similar to the Model data, to represents the states
+-- sets instead of lists. This is because the parser can only parse directly
+-- in to lists and we must do the conversion from list to set before evaluating.
 data SModel = SMdl {
     sctlExpr :: CTL,
     ssts     :: Set State,
     srels    :: [Relation],
     svals    :: [Valuation] 
 } deriving Show
-
-
-data Error = Err1 | Err2 deriving (Eq, Show)
-

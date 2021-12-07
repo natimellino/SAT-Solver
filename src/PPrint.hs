@@ -61,23 +61,23 @@ ppFormula x = render $ ctl2doc (ppCTL x)
 
 ppCTL :: CTL -> String
 -- First, we take care of the synonims patterns so they print correctly
-ppCTL (AF p) = uall ++ urombo ++ (ppCTL p) -- AF pattern
-ppCTL (EF p) = uexists ++ urombo ++ (ppCTL p) -- EF pattern
-ppCTL (AG p) = uall ++ usquare ++ (ppCTL p) -- AG pattern
-ppCTL (EG p) = uexists ++ usquare ++ (ppCTL p) -- EG pattern
-ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
+ppCTL (AF p) = parenss $ uall ++ urombo ++ (ppCTL p) -- AF pattern
+ppCTL (EF p) = parenss $ uexists ++ urombo ++ (ppCTL p) -- EF pattern
+ppCTL (AG p) = parenss $ uall ++ usquare ++ (ppCTL p) -- AG pattern
+ppCTL (EG p) = parenss $ uexists ++ usquare ++ (ppCTL p) -- EG pattern
+ppCTL (Then p q) = parenss $ (ppCTL p) ++ uthen ++ (ppCTL q)
 ppCTL Top = utop
 -- Now the rest is the usual pattern matching
 ppCTL Bottom = ubottom
 ppCTL (Not p) = unot ++ (ppCTL p)
 ppCTL (Atomic v) = v
-ppCTL (And p q) = (ppCTL p) ++ uand ++ (ppCTL q)
-ppCTL (Or p q) = (ppCTL p) ++ uor ++ (ppCTL q)
+ppCTL (And p q) = parenss $ (ppCTL p) ++ uand ++ (ppCTL q)
+ppCTL (Or p q) = parenss $  (ppCTL p) ++ uor ++ (ppCTL q)
 -- ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
-ppCTL (AX p) =  uall ++ ucircle ++ (ppCTL p)
-ppCTL (EX p) =  uexists ++ ucircle ++ (ppCTL p)
-ppCTL (AU p q) =  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
-ppCTL (EU p q) =  uexists ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
+ppCTL (AX p) =  parenss $ uall ++ ucircle ++ (ppCTL p)
+ppCTL (EX p) = parenss $  uexists ++ ucircle ++ (ppCTL p)
+ppCTL (AU p q) = parenss $  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
+ppCTL (EU p q) = parenss $  uexists ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
 
-ppModel :: SModel -> String
-ppModel = undefined
+parenss :: String -> String
+parenss str = "(" ++ str ++ ")"
