@@ -32,9 +32,12 @@ main = do args <- getArgs
 
 -- Parses the content of the input file and converts the model to an smodel
 -- using sets to represent the states instead of lists.
+
+-- We also convert the CTL expresion with sintactic sugar to another one that
+-- only uses the 'base' terms. This is to improve our evaluation algorithm. 
 parseModel :: String -> SModel
 parseModel contents = let model = func $ lexer contents
-                          ctl = desugar (ctlExpr model) 
+                          ctl = desugar (ctlExpr model) -- We convert the 
                           smodel = SMdl ctl (ctlExpr model) (fromList (sts model)) (rels model) (vals model)
                       in smodel
 

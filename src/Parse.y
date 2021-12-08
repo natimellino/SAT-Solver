@@ -86,13 +86,13 @@ relation : '(' state ',' state ')'  { ($2, $4) }
 ctl :: { SCTL }
 ctl : AT                        { SAtomic  $1 }
     | BT                        { SBottom }
-    | TOP                       { STOP }
+    | TOP                       { Top }
     | '!' ctl                   { SNot $2}
     | ctl '&' ctl               { SAnd $1 $3 }
     | ctl '|' ctl               { SOr $1 $3 }
-    | ctl '->' ctl              { STHEN $1 $3 }
-    | AX ctl                    { SAX $2 }
-    | EX ctl                    { SEX $2 }
+    | ctl '->' ctl              { SThen $1 $3 }
+    | AX ctl                    { SANext $2 }
+    | EX ctl                    { SENext $2 }
     | A '[' ctl U ctl ']'       { SAU $3 $5 }
     | E '[' ctl U ctl ']'       { SEU $3 $5 }
     | AF ctl                    { SAF $2 }

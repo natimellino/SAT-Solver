@@ -17,47 +17,24 @@ data CTL =  Atomic Atomic
           | EU CTL CTL -- Exists Until
           deriving Show
 
--- We use a 'data' to represent a logic proposition
+-- This data is the same as the previous one but it contains
+-- sintactic sugar for some terms.
 data SCTL =  SAtomic Atomic
            | SBottom
            | SNot SCTL
            | SAnd SCTL SCTL
            | SOr SCTL SCTL
-           | SAX SCTL -- Para todo siguiente
-           | SEX SCTL -- Existe siguiente
+           | SANext SCTL -- Para todo siguiente
+           | SENext SCTL -- Existe siguiente
            | SAU SCTL SCTL -- For All Until
            | SEU SCTL SCTL -- Exists Until
            | SAF SCTL
            | SEF SCTL
            | SAG SCTL
            | SEG SCTL
-           | STHEN SCTL SCTL
-           | STOP 
+           | SThen SCTL SCTL
+           | Top 
           deriving Show
-
--- We use pattern synonyms for derivated operators to simplify code.
-
--- -- Para todo rombo
--- pattern AF :: CTL -> CTL
--- pattern AF ctl = AU Top ctl
-
--- -- Existe rombo
--- pattern EF :: CTL -> CTL
--- pattern EF ctl = EU Top ctl
-
--- -- Para todo cuadrado
--- pattern AG :: CTL -> CTL
--- pattern AG ctl = Not (EF (Not ctl))
-
--- -- Existe cuadrado
--- pattern EG :: CTL -> CTL
--- pattern EG ctl = Not (AF (Not ctl))
-
--- pattern Then :: CTL -> CTL -> CTL
--- pattern Then p q = Or (Not p) q
-
--- pattern Top :: CTL
--- pattern Top = Not Bottom
 
 -- State
 type State = String
@@ -81,7 +58,8 @@ data Model = Mdl {
 -- in to lists and we must do the conversion from list to set before evaluating.
 data SModel = SMdl {
     sctlExpr :: CTL,
-    sugarCtl :: SCTL, 
+    sugarCtl :: SCTL, -- We store the original ctl expr exactly as it was 
+                      -- parsed so we can pretty print correctly
     ssts     :: Set State,
     srels    :: [Relation],
     svals    :: [Valuation] 

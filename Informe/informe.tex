@@ -347,17 +347,28 @@ y las funciones auxiliares.
 
 \begin{itemize}
   \item En \texttt{src/CTL.hs} se definen las estucturas de datos
-        utilizadas para representar nuestro modelo. Si recordamos 
-        nuestras clases de lógica, podemos advertir que la gramática para fórmulas CTL
-        se puede simplificar bastante en el código utilizando el concepto de \textbf{conjuntos completos de conectivos}.
-        Entonces, toda la gramática que representa a las fórmulas CTL, contiene
-        \textbf{azucar sintáctico}. Al momento de parsear la fórmula en el programa, 
-        utilizamos los \emph{patterns} de Haskell, que nos permiten representar a términos
-        compuestos por otros. Por ejemplo, si parseamos la fórmula:
-        $p \rightarrow q$ en nuestro programa, la misma será tratada 'internamente' como 
-        $\neg p \lor q$ y la evaluación se realizará sobre esta última fórmula, 
-        que es equivalente a la primera, permitiendonos así reducir la cantidad de términos
-        distintos a tener en cuenta al momento de implementar funciones en Haskell. 
+        utilizadas para representar nuestro modelo. A simple vista, 
+        cuando uno da la fórmula CTL para el modelo, hace uso de todos
+        los conectivos que fueron presentados anteriormente. Sin embargo, 
+        recordemos que muchos de ellos en realidad no son necesarios ya que
+        se pueden reescribir en función de otros (el ejemplo más claro es 
+        el operador $\rightarrow$ que se puede representar utilizando 
+        el $\lor$ y el $\neg$).  \\
+        
+        Por ello, en \texttt{src/CTL.hs} se definen dos estructuras distintas 
+        para representar a una fórmula CTL: una representa a todos los operadores, 
+        y la otra, sólo contiene los operadores necesarios para poder escribir
+        cualquier fórmula. Entonces, luego del parseo lo que se hace es llamar
+        a una función especial que se encarga de quitar todo este \emph{azucar
+        sintáctico} y convertir el término parseado a uno que sólo usa los 
+        operadores ``base". \\
+
+        Sin embargo, mirando el código se puede ver que en el modelo se guardan
+        ambas fórmulas, tanto la que tiene azúcar sintáctico como la que no lo
+        tiene. Esto es así porque, para el evaluador utilizamos la fórmula 
+        \emph{desugareada} y para el pretty printer se usa la que sí tiene
+        azúcar sintáctico para poder mostrar el resultado en pantalla de una forma más
+        elegante y legible.
   \item En \texttt{src/PPrint.hs} se implementó un simple pretty printer
         para mostrar los resultados en pantalla de manera más elegante.
   \item En \texttt{app/Main.hs} simplemente se encuentran las funciones que
