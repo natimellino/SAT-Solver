@@ -8,6 +8,7 @@ import Eval
 import Data.Set
 import Data.List
 import PPrint
+import Sugar
 
 main :: IO ()
 main = do args <- getArgs
@@ -21,7 +22,7 @@ main = do args <- getArgs
                if verified then
                  do putStrLn $ ppPrompt "Evaluating..."
                     let sts = eval smodel
-                    printCTL (sctlExpr smodel)
+                    printCTL (sugarCtl smodel)
                     printResult sts
                else
                  do putStrLn $ ppError "SOME ERRORS WERE ENCOUNTERED WHILE VERIFYING THE MODEL:" 
@@ -33,12 +34,13 @@ main = do args <- getArgs
 -- using sets to represent the states instead of lists.
 parseModel :: String -> SModel
 parseModel contents = let model = func $ lexer contents
-                          smodel = SMdl (ctlExpr model) (fromList (sts model)) (rels model) (vals model)
+                          ctl = desugar (ctlExpr model) 
+                          smodel = SMdl ctl (ctlExpr model) (fromList (sts model)) (rels model) (vals model)
                       in smodel
 
 -- These are some dummy functions used to print the output
 
-printCTL :: CTL -> IO ()
+printCTL :: SCTL -> IO ()
 printCTL ctl = putStrLn (ppResult  "SAT FOR " ++ (ppFormula ctl) ++ (ppResult ":"))
 
 printResult :: Set State -> IO ()

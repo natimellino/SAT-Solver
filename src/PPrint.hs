@@ -56,28 +56,28 @@ ppPrompt x  = render $ prompt2doc x
 ppResult :: String -> String
 ppResult x = render $ result2doc x
 
-ppFormula :: CTL -> String
+ppFormula :: SCTL -> String
 ppFormula x = render $ ctl2doc (ppCTL x)
 
-ppCTL :: CTL -> String
+ppCTL :: SCTL -> String
 -- First, we take care of the synonims patterns so they print correctly
-ppCTL (AF p) = parenss $ uall ++ urombo ++ (ppCTL p) -- AF pattern
-ppCTL (EF p) = parenss $ uexists ++ urombo ++ (ppCTL p) -- EF pattern
-ppCTL (AG p) = parenss $ uall ++ usquare ++ (ppCTL p) -- AG pattern
-ppCTL (EG p) = parenss $ uexists ++ usquare ++ (ppCTL p) -- EG pattern
-ppCTL (Then p q) = parenss $ (ppCTL p) ++ uthen ++ (ppCTL q)
-ppCTL Top = utop
+ppCTL (SAF p) = parenss $ uall ++ urombo ++ (ppCTL p) -- AF pattern
+ppCTL (SEF p) = parenss $ uexists ++ urombo ++ (ppCTL p) -- EF pattern
+ppCTL (SAG p) = parenss $ uall ++ usquare ++ (ppCTL p) -- AG pattern
+ppCTL (SEG p) = parenss $ uexists ++ usquare ++ (ppCTL p) -- EG pattern
+ppCTL (STHEN p q) = parenss $ (ppCTL p) ++ uthen ++ (ppCTL q)
+ppCTL STOP = utop
 -- Now the rest is the usual pattern matching
-ppCTL Bottom = ubottom
-ppCTL (Not p) = unot ++ (ppCTL p)
-ppCTL (Atomic v) = v
-ppCTL (And p q) = parenss $ (ppCTL p) ++ uand ++ (ppCTL q)
-ppCTL (Or p q) = parenss $  (ppCTL p) ++ uor ++ (ppCTL q)
+ppCTL SBottom = ubottom
+ppCTL (SNot p) = unot ++ (ppCTL p)
+ppCTL (SAtomic v) = v
+ppCTL (SAnd p q) = parenss $ (ppCTL p) ++ uand ++ (ppCTL q)
+ppCTL (SOr p q) = parenss $  (ppCTL p) ++ uor ++ (ppCTL q)
 -- ppCTL (Then p q) = (ppCTL p) ++ uthen ++ (ppCTL q)
-ppCTL (AX p) =  parenss $ uall ++ ucircle ++ (ppCTL p)
-ppCTL (EX p) = parenss $  uexists ++ ucircle ++ (ppCTL p)
-ppCTL (AU p q) = parenss $  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
-ppCTL (EU p q) = parenss $  uexists ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
+ppCTL (SAX p) =  parenss $ uall ++ ucircle ++ (ppCTL p)
+ppCTL (SEX p) = parenss $  uexists ++ ucircle ++ (ppCTL p)
+ppCTL (SAU p q) = parenss $  uall ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
+ppCTL (SEU p q) = parenss $  uexists ++ "[" ++ (ppCTL p) ++ uunion ++ (ppCTL q) ++ "]"
 
 parenss :: String -> String
 parenss str = "(" ++ str ++ ")"

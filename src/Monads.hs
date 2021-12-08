@@ -9,6 +9,7 @@ import Data.Set
 class Monad m => MonadState m where
     getStates :: m (Set State)
     getCTL    :: m CTL
+    getSCTL   :: m SCTL
     getRels   :: m [Relation]
     getVals   :: m [Valuation]
 
@@ -32,7 +33,8 @@ instance Monad St where
 
 instance MonadState St where
     getStates = State (\s -> (ssts s, s))
-    getCTL    = State (\s -> (sctlExpr s, s)) 
+    getCTL    = State (\s -> (sctlExpr s, s))
+    getSCTL   = State (\s -> (sugarCtl s, s)) 
     getRels   = State (\s -> (srels s, s)) 
     getVals   = State (\s -> (svals s, s)) 
 

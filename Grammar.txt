@@ -33,6 +33,13 @@ stack exec TP-Final-exe ".test/test3.sat"
 
 Tests:
 
+-----------------test1.sat----------------------------
+EG AF !b == s3
+
+------------test2.sat---------------------------------
+E [ !c U b & !t ] == s1, s2, s3
+
+
 ------------model is in file: test3.sat----------------
 r -> AX v  --> [B, C, D, E]
 a -> AX AX a ---> [A, B, C, D, E]

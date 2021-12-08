@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6d8ad900a28f45ee0e03aaa4950299a87037a1dba204777ae0cc4dcc31a4fbeb
+-- hash: 68d386d2f922c65341b0c30513bd2fda409b991fa1afd5b040f7d8f9a4420813
 
 name:           TP-Final
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       Monads
       Parse
       PPrint
+      Sugar
   other-modules:
       Paths_TP_Final
   hs-source-dirs:

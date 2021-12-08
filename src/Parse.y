@@ -83,22 +83,22 @@ relations :   relation                  { [$1] }
 
 relation : '(' state ',' state ')'  { ($2, $4) } 
 
-ctl :: { CTL }
-ctl : AT                        { Atomic  $1 }
-    | BT                        { Bottom }
-    | TOP                       { Top }
-    | '!' ctl                   { Not $2}
-    | ctl '&' ctl               { And $1 $3 }
-    | ctl '|' ctl               { Or $1 $3 }
-    | ctl '->' ctl              { Then $1 $3 }
-    | AX ctl                    { AX $2 }
-    | EX ctl                    { EX $2 }
-    | A '[' ctl U ctl ']'       { AU $3 $5 }
-    | E '[' ctl U ctl ']'       { EU $3 $5 }
-    | AF ctl                    { AF $2 }
-    | EF ctl                    { EF $2 }
-    | AG ctl                    { AG $2 }
-    | EG ctl                    { EG $2 }
+ctl :: { SCTL }
+ctl : AT                        { SAtomic  $1 }
+    | BT                        { SBottom }
+    | TOP                       { STOP }
+    | '!' ctl                   { SNot $2}
+    | ctl '&' ctl               { SAnd $1 $3 }
+    | ctl '|' ctl               { SOr $1 $3 }
+    | ctl '->' ctl              { STHEN $1 $3 }
+    | AX ctl                    { SAX $2 }
+    | EX ctl                    { SEX $2 }
+    | A '[' ctl U ctl ']'       { SAU $3 $5 }
+    | E '[' ctl U ctl ']'       { SEU $3 $5 }
+    | AF ctl                    { SAF $2 }
+    | EF ctl                    { SEF $2 }
+    | AG ctl                    { SAG $2 }
+    | EG ctl                    { SEG $2 }
     | '(' ctl ')'               { $2 }
 
 
